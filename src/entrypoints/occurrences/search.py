@@ -64,7 +64,9 @@ async def run(context: ResponseContext, request: str):
         expansion_response = await _preprocess_user_request(request)
         enrich_locations = []
         if expansion_response.locations:
-            enrich_locations = await map_locations_to_gadm(expansion_response.locations)
+            enrich_locations = await map_locations_to_gadm(
+                expansion_response.locations, process
+            )
         if expansion_response.entities:
             for entity in expansion_response.entities:
                 if entity.type is NamedEntityType.PERSON:

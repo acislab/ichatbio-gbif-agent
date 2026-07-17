@@ -1,6 +1,11 @@
+import asyncio
 import os
 import sqlite3
 from typing import List, Optional, Tuple
+
+from ichatbio.agent_response import IChatBioAgentProcess
+
+from src.log import logger
 from src.models.location import (
     Location,
     GADMHierarchy,
@@ -9,7 +14,6 @@ from src.models.location import (
     GadmMatchType,
     ResolvedLocation,
 )
-from src.log import logger
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GADM_GPKG_PATH = os.path.join(HERE, "gadm.gpkg")
@@ -347,11 +351,17 @@ def perform_match(location: Location, trace: bool = False) -> GADMMatch:
 
 async def map_locations_to_gadm(
     locations: list[Location],
+    process: IChatBioAgentProcess | None = None,
 ) -> list[ResolvedLocation]:
+    # emit a process log to keep the stream alive during long silent GADM lookups (e.g. many coastal states).
     matched_locations: list[ResolvedLocation] = []
-    for loc in locations:
+    total = len(locations)
+    for i, loc in enumerate(locations, start=1):
+        label = loc.state or loc.country or str(loc)
+        if process:
+            await process.log(f"Resolving location {i}/{total}: {label}")
         try:
-            gadm_match: GADMMatch = perform_match(loc, trace=False)
+            gadm_match: GADMMatch = await asyncio.to_thread(perform_match, loc, False)
             resolved = ResolvedLocation(**loc.model_dump(), **gadm_match.model_dump())
             if gadm_match.match_type == GadmMatchType.NONE:
                 logger.warning(f"GADM | Location not found: {loc}")
