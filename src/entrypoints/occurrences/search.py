@@ -208,9 +208,7 @@ async def run(context: ResponseContext, request: str):
             await process.log(pagination_message, data=page_info)
 
             portal_url = api.build_portal_url("occurrence/search", search_params)
-            artifact_description = await _generate_artifact_description(
-                f"User request: {request} Identified organisms in the request: {json.dumps(serialize_organisms(expansion_response.organisms))}, Search parameters: {json.dumps(serialize_for_log(search_params))}, URL: {api_url}",
-            )
+            artifact_description = await _generate_artifact_description(request)
 
             if multi_page_request:
                 await process.create_artifact(
