@@ -21,7 +21,7 @@ RUN mkdir -p /home/app/logs && chown -R nonroot:nonroot /home/app/logs
 WORKDIR /home/app
 
 # Download GADM database
-RUN apt-get install -y wget unzip \
+RUN apt-get update && apt-get install -y wget unzip \
       && mkdir -p src/gadm \
       && wget -O /tmp/gadm.zip https://geodata.ucdavis.edu/gadm/gadm4.1/gadm_410-gpkg.zip \
       && unzip /tmp/gadm.zip -d /tmp/gadm \
