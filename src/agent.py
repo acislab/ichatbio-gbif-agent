@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 from typing_extensions import override
 
 from ichatbio.agent import IChatBioAgent
@@ -7,6 +7,7 @@ from ichatbio.types import AgentCard
 from pydantic import BaseModel
 
 from src.entrypoints import occurrences, species, registry
+from src.instructor_client import update_llm_credentials
 from src.log import logger
 
 
@@ -35,7 +36,9 @@ class GBIFAgent(IChatBioAgent):
         request: str,
         entrypoint: str,
         params: Optional[BaseModel],
+        metadata: dict[str, Any] | None = None,
     ):
+        update_llm_credentials(metadata)
         logger.info(f"AGENT | Entrypoint={entrypoint} | Request={request}")
         if params:
             logger.info(f"AGENT | Received params: {params}")

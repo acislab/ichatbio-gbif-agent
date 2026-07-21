@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "ichatbio-sdk==0.2.7",
+    "ichatbio-sdk==0.2.8",
     "instructor>=1.9.2",
     "openai>=1.97.0",
     "pydantic>=2.11.7",
