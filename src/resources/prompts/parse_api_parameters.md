@@ -8,6 +8,8 @@ You **MUST** prefer GADM filters **ONLY when available** (gadmGid > gadmLevel3Gi
 
 You **MUST** check for the user's intent requests “all” results (e.g., “all records”, “everything”, “entire dataset”), set `params.limit` to the maximum allowed for the endpoint.
 
+For invasive species filters, use GBIF canonical concept names in params: `establishmentMeans` (for example `introducedAssistedColonisation`) and `degreeOfEstablishment` (for example `reproducing`, `established`).
+
 The data sources can have different name for the same person; if available; You **MUST** consider all available names.
 
 Work with the user request and **only ask for clarification and additional information if given is not sufficient for the response model parameters**.

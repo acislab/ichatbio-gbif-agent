@@ -1,5 +1,5 @@
 from pydantic import Field, field_validator
-from typing import List, Optional
+from typing import ClassVar, List, Optional
 from uuid import UUID
 from datetime import datetime
 
@@ -888,16 +888,83 @@ class GeologicalFilters(BaseModel):
 class InvasiveSpeciesFilters(BaseModel):
     """Filters for occurrences by invasive species information (establishment means, degree of establishment, pathway)."""
 
+    _DEGREE_OF_ESTABLISHMENT_ALIASES: ClassVar[dict[str, str]] = {
+        "managed": "managed",
+        "unestablished": "unestablished",
+        "native": "native",
+        "captive": "captive",
+        "cultivated": "cultivated",
+        "released": "released",
+        "failing": "failing",
+        "casual": "casual",
+        "naturalized": "naturalized",
+        "reproducing": "reproducing",
+        "established": "established",
+        "colonising": "colonising",
+        "invasive": "invasive",
+        "widespreadinvasive": "widespreadInvasive",
+        "spreading": "spreading",
+    }
+
+    _ESTABLISHMENT_MEANS_ALIASES: ClassVar[dict[str, str]] = {
+        "native": "native",
+        "nativereintroduced": "nativeReintroduced",
+        "nativeendemic": "nativeEndemic",
+        "introduced": "introduced",
+        "introducedassistedcolonisation": "introducedAssistedColonisation",
+        "assistedcolonisation": "introducedAssistedColonisation",
+        "vagrant": "vagrant",
+        "uncertain": "uncertain",
+    }
+
+    @staticmethod
+    def _normalize_vocab_value(value: str) -> str:
+        return "".join(ch for ch in value if ch.isalnum()).lower()
+
+    @field_validator("degreeOfEstablishment", mode="before")
+    def normalize_degree_of_establishment(cls, v):
+        if v is None:
+            return None
+
+        values = v if isinstance(v, list) else [v]
+        normalized_values = []
+        for item in values:
+            if not isinstance(item, str):
+                normalized_values.append(item)
+                continue
+            normalized = cls._normalize_vocab_value(item)
+            normalized_values.append(
+                cls._DEGREE_OF_ESTABLISHMENT_ALIASES.get(normalized, item)
+            )
+        return normalized_values
+
+    @field_validator("establishmentMeans", mode="before")
+    def normalize_establishment_means(cls, v):
+        if v is None:
+            return None
+
+        values = v if isinstance(v, list) else [v]
+        normalized_values = []
+        for item in values:
+            if not isinstance(item, str):
+                normalized_values.append(item)
+                continue
+            normalized = cls._normalize_vocab_value(item)
+            normalized_values.append(
+                cls._ESTABLISHMENT_MEANS_ALIASES.get(normalized, item)
+            )
+        return normalized_values
+
     degreeOfEstablishment: Optional[List[str]] = Field(
         None,
         description="The degree to which an organism survives, reproduces and expands its range at the given place and time, as defined in the GBIF DegreeOfEstablishment vocabulary. Parameter may be repeated.",
-        examples=[["Invasive"]],
+        examples=[["invasive"], ["reproducing", "established"]],
     )
 
     establishmentMeans: Optional[List[str]] = Field(
         None,
         description="Whether an organism or organisms have been introduced to a given place and time through the direct or indirect activity of modern humans, as defined in the GBIF EstablishmentMeans vocabulary. Parameter may be repeated.",
-        examples=[["Native"]],
+        examples=[["native"], ["introducedAssistedColonisation"]],
     )
 
     pathway: Optional[List[str]] = Field(
