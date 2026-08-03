@@ -7,7 +7,7 @@ from ichatbio.types import AgentCard
 from pydantic import BaseModel
 
 from src.entrypoints import occurrences, species, registry
-from src.instructor_client import update_llm_credentials
+from src.instructor_client import set_llm_credentials
 from src.log import logger
 
 
@@ -38,7 +38,7 @@ class GBIFAgent(IChatBioAgent):
         params: Optional[BaseModel],
         metadata: dict[str, Any] | None = None,
     ):
-        update_llm_credentials(metadata)
+        set_llm_credentials(metadata)
         logger.info(f"AGENT | Entrypoint={entrypoint} | Request={request}")
         if params:
             logger.info(f"AGENT | Received params: {params}")
