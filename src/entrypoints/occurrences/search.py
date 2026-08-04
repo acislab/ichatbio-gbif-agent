@@ -21,6 +21,7 @@ from src.utils import (
     NamedEntityType,
 )
 from src.gbif.parser import parse
+from src.gbif.param_normalizer import normalize_occurrence_params
 from src.gbif.resolve_parameters import (
     resolve_names_to_taxonkeys,
     resolve_pending_search_parameters,
@@ -337,6 +338,19 @@ async def _get_parameters(
 
     # Single copy operation with all updates
     params = response.params.model_copy(update=params_updates)
+    params, normalization_report = await normalize_occurrence_params(params)
+
+    if process and (normalization_report.matches or normalization_report.misses):
+        await process.log(
+            "Normalized vocabulary-backed occurrence parameters",
+            data={
+                "matches": [
+                    match.__dict__ for match in normalization_report.matches
+                ],
+                "misses": [miss.__dict__ for miss in normalization_report.misses],
+                "vocabularies_used": normalization_report.vocabularies_used,
+            },
+        )
 
     return ParameterResolutionResult(
         search_params=params,
