@@ -67,14 +67,14 @@ class GBIFOccurrenceBaseParams(
         300,
         ge=0,
         le=4800,
-        description="Controls the number of results in the page. If incase user has requested for all of the records search, this parameter value must be set to 4800.",
+        description="The page size (maximum number of records to retrieve). Cannot retrieve more than 4800",
     )
 
     offset: Optional[int] = Field(
-        0,
+        None,
         ge=0,
         le=100000,
-        description="Determines the offset for the search results. A limit of 20 and offset of 40 will get the third page of 20 results. This service has a maximum offset of 100,000.",
+        description="The page offest (how many records to skip)",
     )
 
 
