@@ -56,7 +56,7 @@ async def run(context: ResponseContext, request: str):
 
         api = GbifApi()
 
-        api_url = api.build_occurrence_by_id_url(params)
+        api_url = api.build_occurrence_by_id_url(params.gbifId)
         await process.log(f"Constructed API URL: {api_url}")
 
         try:

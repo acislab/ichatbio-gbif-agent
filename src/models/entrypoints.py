@@ -141,10 +141,10 @@ class GBIFSpeciesFacetsParams(GBIFSpeciesSearchParams, models.common.FacetParams
 class GBIFSpeciesTaxonomicParams(ProductionBaseModel):
     """Parameters for GBIF species taxonomic information - retrieves comprehensive taxonomic data for a specific species"""
 
-    key: Optional[int] = Field(
+    key: Optional[str] = Field(
         None,
-        description="The GBIF key (taxon key) for the species. This is a required parameter that uniquely identifies the species in the GBIF backbone.",
-        examples=[5231190, 2476674, 2877951],
+        description="A CoL XR taxon ID to identify organisms by species, families, kingdoms, etc.",
+        examples=["Q2M4", "P", "623RM"],
     )
 
     name: Optional[str] = Field(

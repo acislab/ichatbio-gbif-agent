@@ -21,17 +21,18 @@ def mock_openai_response():
 
 def test_create_response_model():
     ResponseModel = create_response_model(MockParameters)
-    assert "search_parameters" in ResponseModel.model_fields
+    assert "params" in ResponseModel.model_fields
     assert "artifact_description" in ResponseModel.model_fields
     assert "clarification_needed" in ResponseModel.model_fields
     assert "clarification_reason" in ResponseModel.model_fields
     instance = ResponseModel(
-        search_parameters=MockParameters(species="test"),
+        plan="Do it right!",
+        params=MockParameters(species="test"),
         artifact_description="test description",
         clarification_needed=False,
         clarification_reason=None,
     )
-    assert instance.search_parameters.species == "test"
+    assert instance.params.species == "test"
     assert instance.artifact_description == "test description"
 
 

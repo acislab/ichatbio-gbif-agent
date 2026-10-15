@@ -326,7 +326,7 @@ async def _get_parameters(
         if taxon_keys:
             params_updates.update(
                 {
-                    "taxonKey": [int(key) for key in taxon_keys],
+                    "taxonKey": [str(key) for key in taxon_keys],
                     "scientificName": None,
                 }
             )

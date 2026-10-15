@@ -32,7 +32,7 @@ class FacetParams(ProductionBaseModel):
 
     facet: Optional[List[str]] = Field(
         default=None,
-        description="A facet name used to retrieve the most frequent values for a field. This parameter may be repeated to request multiple facets. Note terms not available for searching are not available for faceting. If omitted, only the total count is returned without breakdowns. For occurrences: facets are allowed for all search parameters except geometry and geoDistance.",
+        description="A facet name used to retrieve the most frequent values for a field. This parameter may be repeated to request multiple facets. Note: terms not available for searching are not available for faceting. If omitted, only the total count is returned without breakdowns. For occurrences: facets are allowed for all search parameters except geometry and geoDistance.",
         examples=[
             ["scientificName"],
             ["country", "year"],

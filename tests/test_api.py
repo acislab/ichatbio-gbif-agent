@@ -23,9 +23,8 @@ def fetcher():
 
 
 def test_api_initialization(url_builder):
-    assert url_builder.base_url == "https://api.gbif.org/v1"
+    assert url_builder.base_url == "https://api.gbif.org"
     assert url_builder.portal_url == "https://gbif.org"
-    assert url_builder.v2_base_url == "https://api.gbif.org/v2"
 
 
 def test_convert_to_api_params(url_builder):
@@ -118,7 +117,7 @@ def test_complex_search_params(url_builder):
     assert api_params["basisOfRecord"] == ["HUMAN_OBSERVATION"]
     assert api_params["continent"] == ["EUROPE"]
     assert api_params["country"] == ["US"]
-    assert api_params["year"] == "2020,2023"
+    assert api_params["year"] == ["2020,2023"]
     assert api_params["decimalLatitude"] == "30,50"
     assert api_params["decimalLongitude"] == "-100,-50"
     assert api_params["hasCoordinate"] == "true"
