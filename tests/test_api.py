@@ -80,17 +80,17 @@ class TestBuildPortalURLs:
     def test_occurrence_search(self, url_builder):
         params = GBIFOccurrenceSearchParams(scientificName=["Quercus robur"], limit=5, offset=10)
         portal_url = url_builder.build_portal_url("occurrence/search", params)
-        assert portal_url == "https://gbif.org/occurrence/search?offset=10&scientificName=Quercus robur&advanced=true"
+        assert portal_url == "https://gbif.org/occurrence/search?offset=10&scientificName=Quercus robur"
 
     def test_remove_facet_parameters(self, url_builder):
         params = GBIFOccurrenceFacetsParams(country=["MN"], facet=["kingdom", "country"], facetMincount=5)
         portal_url = url_builder.build_portal_url("occurrence/search", params)
-        assert portal_url == "https://gbif.org/occurrence/search?country=MN&advanced=true"
+        assert portal_url == "https://gbif.org/occurrence/search?country=MN"
 
     def test_build_portal_url_with_repeated_parameters(self, url_builder):
         params = GBIFOccurrenceSearchParams(recordedBy=["Fred", "Wilma"])
         portal_url = url_builder.build_portal_url("occurrence/search", params)
-        assert portal_url == "https://gbif.org/occurrence/search?recordedBy=Fred&recordedBy=Wilma&advanced=true"
+        assert portal_url == "https://gbif.org/occurrence/search?recordedBy=Fred&recordedBy=Wilma"
 
 
 def test_complex_search_params(url_builder):

@@ -133,6 +133,7 @@ class GbifApi:
 
         # Remove facet-related and limit parameters
         dict_params = {key: value for key, value in dict_params.items() if key not in {
+            "shuffle",
             "limit",
             "facet",
             "facetLimit",
@@ -148,7 +149,7 @@ class GbifApi:
                 for parameter, value in dict_params.items()
                 if value
             )
-            return f"{base_url}?{arguments}&advanced=true"
+            return f"{base_url}?{arguments}"
 
         return base_url
 
