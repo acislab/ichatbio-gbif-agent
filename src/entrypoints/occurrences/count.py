@@ -351,16 +351,16 @@ async def _enrich_facets_with_names(
         field = facet.get("field", "")
         if field in taxonomic_facet_fields:
             counts = facet.get("counts", [])
-            keys = [int(count.get("name")) for count in counts if count.get("name")]
+            keys = [name for count in counts if (name := count.get("name"))]
 
             if keys:
                 key_to_name = await resolve_keys_to_names(api, process, keys, field)
                 enriched_counts = []
                 for count in counts:
                     key = count.get("name")
-                    if key and int(key) in key_to_name:
+                    if key in key_to_name:
                         enriched_count = count.copy()
-                        enriched_count["scientificName"] = key_to_name[int(key)]
+                        enriched_count["scientificName"] = key_to_name[key]
                         enriched_counts.append(enriched_count)
                     else:
                         enriched_counts.append(count)

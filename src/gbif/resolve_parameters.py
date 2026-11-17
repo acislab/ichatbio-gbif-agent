@@ -364,14 +364,14 @@ async def resolve_keys_to_names(
     process: IChatBioAgentProcess,
     keys: list,
     type: str,
-) -> Dict[int, str]:
+) -> Dict[int | str, str]:
     """
     Resolve GBIF usage keys to scientific names using the species API.
     """
     if not keys:
         return {}
 
-    unique_keys: list[int] = sorted({int(k) for k in keys if k is not None})
+    unique_keys: list[str] = sorted({k for k in keys if k is not None})
     urls: Dict[str, str] = {
         str(usage_key): api.build_species_key_search_url(usage_key)
         for usage_key in unique_keys
@@ -381,7 +381,7 @@ async def resolve_keys_to_names(
         data={"keys": unique_keys, "type": type},
     )
     results = await execute_multiple_requests(urls)
-    keys_to_name: Dict[int, str] = {}
+    keys_to_name: Dict[str, str] = {}
     for key_str, payload in results.items():
         try:
             if isinstance(payload, dict) and "error" not in payload:
@@ -389,7 +389,7 @@ async def resolve_keys_to_names(
                 if not scientific_name:
                     scientific_name = payload.get("canonicalName")
                 if scientific_name:
-                    keys_to_name[int(key_str)] = scientific_name
+                    keys_to_name[key_str] = scientific_name
                 else:
                     await process.log(
                         f"No scientific name found for key {key_str}",
