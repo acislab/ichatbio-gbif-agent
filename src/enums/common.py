@@ -1,6 +1,7 @@
-from enum import Enum
+from util_types import ParameterEnum
 
-class ContinentEnum(str, Enum):
+
+class ContinentEnum(str, ParameterEnum):
     """
     The continent, based on a 7 continent model.
     See the GBIF Continents project for the exact divisions.
@@ -19,7 +20,7 @@ class ContinentEnum(str, Enum):
         return self.value
 
 
-class GbifRegionEnum(str, Enum):
+class GbifRegionEnum(str, ParameterEnum):
     AFRICA = "AFRICA"
     ASIA = "ASIA"
     EUROPE = "EUROPE"
@@ -32,7 +33,7 @@ class GbifRegionEnum(str, Enum):
         return self.value
 
 
-class LicenseEnum(str, Enum):
+class LicenseEnum(str, ParameterEnum):
     """A legal document giving official permission to do something with the occurrence."""
 
     CC0_1_0 = "CC0_1_0"
@@ -45,7 +46,7 @@ class LicenseEnum(str, Enum):
         return self.value
 
 
-class MediaObjectTypeEnum(str, Enum):
+class MediaObjectTypeEnum(str, ParameterEnum):
     """The kind of media object."""
 
     StillImage = "StillImage"
@@ -57,7 +58,7 @@ class MediaObjectTypeEnum(str, Enum):
         return self.value
 
 
-class CountryEnum(str, Enum):
+class CountryEnum(str, ParameterEnum):
     """
     ISO-3166-1 (2-letter) country code enumeration.
     The 2-letter country code (as per ISO-3166-1) used by GBIF API.

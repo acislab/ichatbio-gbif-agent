@@ -4,10 +4,10 @@ Registry Parameters Enums
 This module contains enums for registry-related API parameters based on the GBIF OpenAPI specification.
 """
 
-from enum import Enum
+from util_types import ParameterEnum
 
 
-class DatasetTypeEnum(Enum):
+class DatasetTypeEnum(ParameterEnum):
     """Dataset type enumeration"""
     OCCURRENCE = "OCCURRENCE"
     CHECKLIST = "CHECKLIST"
@@ -15,7 +15,7 @@ class DatasetTypeEnum(Enum):
     SAMPLING_EVENT = "SAMPLING_EVENT"
 
 
-class DatasetSubtypeEnum(Enum):
+class DatasetSubtypeEnum(ParameterEnum):
     """Dataset subtype enumeration"""
     TAXONOMIC_AUTHORITY = "TAXONOMIC_AUTHORITY"
     NOMENCLATOR_AUTHORITY = "NOMENCLATOR_AUTHORITY"
@@ -27,7 +27,7 @@ class DatasetSubtypeEnum(Enum):
     OBSERVATION = "OBSERVATION"
 
 
-class EndpointTypeEnum(Enum):
+class EndpointTypeEnum(ParameterEnum):
     """Endpoint type enumeration"""
     EML = "EML"
     FEED = "FEED"
@@ -51,7 +51,7 @@ class EndpointTypeEnum(Enum):
     OTHER = "OTHER"
 
 
-class MasterSourceTypeEnum(str, Enum):
+class MasterSourceTypeEnum(str, ParameterEnum):
     """The master source type of a GRSciColl institution or collection"""
 
     GRSCICOLL = "GRSCICOLL"
@@ -62,7 +62,7 @@ class MasterSourceTypeEnum(str, Enum):
         return self.value
 
 
-class MasterSourceEnum(str, Enum):
+class MasterSourceEnum(str, ParameterEnum):
     """Source attribute of MasterSourceMetadata"""
 
     DATASET = "DATASET"
@@ -73,7 +73,7 @@ class MasterSourceEnum(str, Enum):
         return self.value
 
 
-class IdentifierTypeEnum(str, Enum):
+class IdentifierTypeEnum(str, ParameterEnum):
     """An identifier type for the identifier parameter"""
 
     URL = "URL"
@@ -104,7 +104,7 @@ class IdentifierTypeEnum(str, Enum):
         return self.value
 
 
-class SortByEnum(str, Enum):
+class SortByEnum(str, ParameterEnum):
     """Field to sort the results by"""
 
     NUMBER_SPECIMENS = "NUMBER_SPECIMENS"
@@ -113,7 +113,7 @@ class SortByEnum(str, Enum):
         return self.value
 
 
-class SortOrderEnum(str, Enum):
+class SortOrderEnum(str, ParameterEnum):
     """Sort order to use with the sortBy parameter"""
 
     ASC = "ASC"

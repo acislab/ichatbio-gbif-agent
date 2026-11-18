@@ -1,7 +1,7 @@
 from typing import Optional, List, Tuple, Dict
-from enum import Enum
 from pydantic import BaseModel, Field
 from src.enums.common import CountryEnum
+from util_types import ParameterEnum
 
 
 class Location(BaseModel):
@@ -200,7 +200,7 @@ class Location(BaseModel):
         return ", ".join(parts) if parts else "Empty Location"
 
 
-class GadmMatchType(Enum):
+class GadmMatchType(ParameterEnum):
     """
     Amount of location information that was found in GADM
     """

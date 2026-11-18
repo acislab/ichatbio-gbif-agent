@@ -1,6 +1,7 @@
-from enum import Enum
+from util_types import ParameterEnum
 
-class BasisOfRecordEnum(str, Enum):
+
+class BasisOfRecordEnum(str, ParameterEnum):
     """
     The values of the Darwin Core term Basis of Record which can apply to occurrences.
     See GBIF's Darwin Core Type Vocabulary for definitions.
@@ -22,7 +23,7 @@ class BasisOfRecordEnum(str, Enum):
         return self.value
 
 
-class OccurrenceStatusEnum(str, Enum):
+class OccurrenceStatusEnum(str, ParameterEnum):
     """
     A statement about the presence or absence of a Taxon at a Location.
     For definitions, see the GBIF occurrence status vocabulary.

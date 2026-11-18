@@ -1,7 +1,7 @@
-from enum import Enum
+from util_types import ParameterEnum
 
 
-class NameTypeEnum(str, Enum):
+class NameTypeEnum(str, ParameterEnum):
     SCIENTIFIC = "SCIENTIFIC"
     VIRUS = "VIRUS"
     HYBRID = "HYBRID"
@@ -15,7 +15,7 @@ class NameTypeEnum(str, Enum):
     BLACKLISTED = "BLACKLISTED"
 
 
-class TaxonomicRankEnum(str, Enum):
+class TaxonomicRankEnum(str, ParameterEnum):
     DOMAIN = "DOMAIN"
     SUPERKINGDOM = "SUPERKINGDOM"
     KINGDOM = "KINGDOM"
@@ -93,7 +93,7 @@ class TaxonomicRankEnum(str, Enum):
     UNRANKED = "UNRANKED"
 
 
-class TaxonomicStatusEnum(str, Enum):
+class TaxonomicStatusEnum(str, ParameterEnum):
     ACCEPTED = "ACCEPTED"
     DOUBTFUL = "DOUBTFUL"
     SYNONYM = "SYNONYM"
@@ -103,7 +103,7 @@ class TaxonomicStatusEnum(str, Enum):
     MISAPPLIED = "MISAPPLIED"
 
 
-class OriginEnum(str, Enum):
+class OriginEnum(str, ParameterEnum):
     SOURCE = "SOURCE"
     DENORMED_CLASSIFICATION = "DENORMED_CLASSIFICATION"
     VERBATIM_PARENT = "VERBATIM_PARENT"
@@ -118,7 +118,7 @@ class OriginEnum(str, Enum):
     OTHER = "OTHER"
 
 
-class ThreatStatusEnum(str, Enum):
+class ThreatStatusEnum(str, ParameterEnum):
     EXTINCT = "EXTINCT"
     EXTINCT_IN_THE_WILD = "EXTINCT_IN_THE_WILD"
     REGIONALLY_EXTINCT = "REGIONALLY_EXTINCT"
@@ -132,13 +132,13 @@ class ThreatStatusEnum(str, Enum):
     NOT_EVALUATED = "NOT_EVALUATED"
 
 
-class HabitatEnum(str, Enum):
+class HabitatEnum(str, ParameterEnum):
     MARINE = "MARINE"
     FRESHWATER = "FRESHWATER"
     TERRESTRIAL = "TERRESTRIAL"
 
 
-class TypeStatusEnum(str, Enum):
+class TypeStatusEnum(str, ParameterEnum):
     """Nomenclatural type status enum based on GBIF OpenAPI specification"""
 
     TYPE = "Type"
@@ -187,7 +187,7 @@ class TypeStatusEnum(str, Enum):
     TOPOTYPE = "Topotype"
 
 
-class NomenclaturalStatusEnum(str, Enum):
+class NomenclaturalStatusEnum(str, ParameterEnum):
     """Nomenclatural status enum based on GBIF OpenAPI specification"""
 
     LEGITIMATE = "LEGITIMATE"
@@ -224,7 +224,7 @@ class NomenclaturalStatusEnum(str, Enum):
     DENIED = "DENIED"
 
 
-class IssueEnum(str, Enum):
+class IssueEnum(str, ParameterEnum):
     """Data quality issues enum based on GBIF OpenAPI specification"""
 
     PARENT_NAME_USAGE_ID_INVALID = "PARENT_NAME_USAGE_ID_INVALID"
@@ -266,7 +266,7 @@ class IssueEnum(str, Enum):
     PARTIALLY_PARSABLE = "PARTIALLY_PARSABLE"
 
 
-class QueryFieldEnum(str, Enum):
+class QueryFieldEnum(str, ParameterEnum):
     SCIENTIFIC_NAME = "scientificName"
     VERNACULAR_NAME = "vernacularName"
     DESCRIPTION = "description"

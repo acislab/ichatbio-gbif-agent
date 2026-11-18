@@ -8,10 +8,11 @@ from src.log import logger
 from src.models.location import Location
 from src.models.bionomia import BionomiaNameRecord, NameMatchResult
 from src.instructor_client import get_client
-from enum import Enum
+
+from util_types import ParameterEnum
 
 
-class NamedEntityType(Enum):
+class NamedEntityType(ParameterEnum):
     PERSON = "person"
     PUBLISHING_ORGANIZATION = "publishing_organization"
     INSTITUTION = "institution"
@@ -100,12 +101,11 @@ def serialize_for_log(obj):
 
 
 async def _generate_resolution_message(
-    user_request: str,
-    response: BaseModel,
-    resolved_fields: dict,
-    unresolved_fields: list,
+        user_request: str,
+        response: BaseModel,
+        resolved_fields: dict,
+        unresolved_fields: list,
 ) -> str:
-
     class ResolutionMessage(BaseModel):
         message: str = Field(
             ...,
@@ -141,7 +141,6 @@ async def _generate_resolution_message(
 
 
 async def _generate_artifact_description(details: str) -> str:
-
     class ArtifactDescription(BaseModel):
         description: Optional[str] = Field(
             description="A concise characterization of the retrieved record statistics.",
@@ -266,7 +265,7 @@ For each match in selected_matches:
 
 
 async def find_best_name_match(
-    name: str, bionomia_matches: list[Union[BionomiaNameRecord, dict]]
+        name: str, bionomia_matches: list[Union[BionomiaNameRecord, dict]]
 ) -> NameMatchResult:
     # Convert all matches to BionomiaNameRecord objects and assign match_ids
     matches_with_ids = []

@@ -1,4 +1,5 @@
 import pytest
+from enums.species import TypeStatusEnum
 
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_sync_request
@@ -91,6 +92,11 @@ class TestBuildPortalURLs:
         params = GBIFOccurrenceSearchParams(recordedBy=["Fred", "Wilma"])
         portal_url = url_builder.build_portal_url("occurrence/search", params)
         assert portal_url == "https://gbif.org/occurrence/search?recordedBy=Fred&recordedBy=Wilma"
+
+    def test_enum_param(self, url_builder):
+        params = GBIFOccurrenceSearchParams(typeStatus=[TypeStatusEnum.HOLOTYPE])
+        portal_url = url_builder.build_portal_url("occurrence/search", params)
+        assert portal_url == "https://gbif.org/occurrence/search?typeStatus=Holotype"
 
 
 def test_complex_search_params(url_builder):
