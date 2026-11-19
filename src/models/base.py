@@ -6,10 +6,7 @@ from pydantic import (
 
 
 class ProductionBaseModel(BaseModel):
-    """Base model with production-ready settings for all GBIF models (immutable, strict validation)."""
-
     model_config = ConfigDict(
-        frozen=True,  # Models are immutable
         extra="forbid",  # Forbid extra fields not in the model
         validate_assignment=True,  # Validate when values are assigned
         from_attributes=True,  # Allow loading from objects with attributes

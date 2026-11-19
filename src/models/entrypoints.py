@@ -139,54 +139,29 @@ class GBIFSpeciesFacetsParams(GBIFSpeciesSearchParams, models.common.FacetParams
 
 
 class GBIFSpeciesTaxonomicParams(ProductionBaseModel):
-    """Parameters for GBIF species taxonomic information - retrieves comprehensive taxonomic data for a specific species"""
+    """Search parameters for GBIF taxonomic records"""
 
     key: Optional[str] = Field(
         None,
-        description="A CoL XR taxon ID to identify organisms by species, families, kingdoms, etc.",
+        description="A CoL XR taxon ID",
         examples=["Q2M4", "P", "623RM"],
     )
 
     name: Optional[str] = Field(
         None,
-        description="The scientific name of the species. This is a required parameter that uniquely identifies the species in the GBIF backbone.",
+        description="The scientific name or vernacular name of the taxon",
         examples=["Panthera onca", "jaguar", "Quercus robur", "oak tree"],
     )
 
     rank: Optional[TaxonomicRankEnum] = Field(
         None,
-        description="The taxonomic rank of the species. This is an optional parameter that can be used to filter the results by taxonomic rank.",
-        examples=[
-            TaxonomicRankEnum.SPECIES,
-            TaxonomicRankEnum.GENUS,
-            TaxonomicRankEnum.FAMILY,
-            TaxonomicRankEnum.ORDER,
-        ],
+        description="The taxonomic rank of the taxon",
     )
 
     qField: Optional[QueryFieldEnum] = Field(
         None,
-        description="The field to search in. This is an optional parameter that can be used to search in the scientificName or vernacularName field.",
+        description="If using the q parameter, this specifies what field to search in, e.g. \"scientificName\" or \"vernacularName\"",
         examples=[QueryFieldEnum.SCIENTIFIC_NAME, QueryFieldEnum.VERNACULAR_NAME],
-    )
-
-    # Optional parameters for controlling data retrieval
-    includeSynonyms: Optional[bool] = Field(
-        True,
-        description="Whether to include synonyms in the response. Synonyms are alternative scientific names for the same taxon.",
-        examples=[True, False],
-    )
-
-    includeChildren: Optional[bool] = Field(
-        True,
-        description="Whether to include child taxa (subspecies, varieties, etc.) in the response.",
-        examples=[True, False],
-    )
-
-    includeParents: Optional[bool] = Field(
-        True,
-        description="Whether to include the complete taxonomic hierarchy (parents) in the response.",
-        examples=[True, False],
     )
 
     language: Optional[str] = Field(

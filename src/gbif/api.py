@@ -1,13 +1,14 @@
 """
 GBIF API URL Builder Module
 """
-
+import logging
 from typing import Dict, Any
 from urllib.parse import urlencode
 from uuid import UUID
 
+import httpx
+from httpx import AsyncClient
 from pydantic import BaseModel
-
 from src.models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceFacetsParams,
@@ -15,16 +16,29 @@ from src.models.entrypoints import (
     GBIFSpeciesSearchParams,
     GBIFSpeciesFacetsParams,
     GBIFSpeciesTaxonomicParams,
-    GBIFOccurrenceByIdParams,
     GBIFDatasetSearchParams,
 )
 from src.models.registry import GBIFGrSciCollInstitutionSearchParams
 
+COL_CHECKLIST_KEY = "7ddf754f-d193-4cc9-b351-99906754a03b"
 
 class GbifApi:
     def __init__(self):
         self.base_url = "https://api.gbif.org"
         self.portal_url = "https://gbif.org"
+        self.httpx_client = AsyncClient(follow_redirects=True, timeout=10.)
+
+    async def get(self, url: str, max_attempts = 3) -> httpx.Response:
+        response = await self.httpx_client.get(url)
+        if response.status_code >= 500:
+            logging.warning(
+                f"Got {response.status_code} status, retrying ({max_attempts} attempts remaining)"
+            )
+            return await self.get(url, max_attempts - 1)
+        else:
+            response.raise_for_status()
+
+        return response
 
     def _convert_to_api_params(self, params: BaseModel, with_checklist=False) -> Dict[str, Any]:
         api_params = {}
@@ -56,7 +70,7 @@ class GbifApi:
 
         # Use "CoL XR" taxon IDs instead of GBIF backbone IDs. This is only needed for the API, not the search portal
         if with_checklist:
-            api_params["checklistKey"] = "7ddf754f-d193-4cc9-b351-99906754a03b"
+            api_params["checklistKey"] = COL_CHECKLIST_KEY
 
         return api_params
 
@@ -83,7 +97,7 @@ class GbifApi:
         return self._make_api_url("/v1/species/search", api_params)
 
     def build_species_key_search_url(self, col_xr_key: str) -> str:
-        return self._make_api_url(f"/v1/species/{col_xr_key}")
+        return self._make_api_url(f"/v2/species/{COL_CHECKLIST_KEY}/{col_xr_key}")
 
     def build_species_taxonomic_urls(
             self, params: GBIFSpeciesTaxonomicParams
@@ -94,19 +108,8 @@ class GbifApi:
         usage_key = params.key
         base_url = self.build_species_key_search_url(usage_key)
         urls = {
-            "basic": f"{base_url}",
-            "parsed_name": f"{base_url}/name",
+            "info": f"{base_url}/info",
         }
-        if params.includeParents:
-            urls["parents"] = f"{base_url}/parents"
-        if params.includeChildren:
-            urls["children"] = (
-                f"{base_url}/children?limit={params.limit}&offset={params.offset}"
-            )
-        if params.includeSynonyms:
-            urls["synonyms"] = (
-                f"{base_url}/synonyms?limit={params.limit}&offset={params.offset}"
-            )
         return urls
 
     def build_species_match_url(self, params: GBIFSpeciesNameMatchParams) -> str:

@@ -147,7 +147,7 @@ async def parse(
         entrypoint_id: str,
         parameters_model: Type[T],
         preprocess_information: Optional[UserRequestExpansion] = None,
-) -> T:
+) -> BaseModel:
     response_model = create_response_model(parameters_model)
 
     client = await get_client()
