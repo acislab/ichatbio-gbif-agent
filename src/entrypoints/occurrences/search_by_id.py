@@ -2,13 +2,11 @@ import uuid
 
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentEntrypoint
-
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
-from src.models.validators import OccurrenceSearchByIdParamsValidator
-from src.log import with_logging, logger
 from src.gbif.parser import parse
-
+from src.log import with_logging, logger
+from src.models.validators import OccurrenceSearchByIdParamsValidator
 
 description = """
 **Use Case:** Use this entrypoint to retrieve one single, specific occurrence record by its unique GBIF identifier.
@@ -19,7 +17,6 @@ description = """
 
 **Limitations:** This entrypoint only works with a GBIF ID. It cannot be used for general or filtered searches.
 """
-
 
 entrypoint = AgentEntrypoint(
     id="find_occurrence_by_id",
@@ -130,7 +127,7 @@ async def run(context: ResponseContext, request: str):
             )
 
 
-def _generate_response_summary(gbif_id: int, portal_url: str) -> str:
+def _generate_response_summary(gbif_id, portal_url: str) -> str:
     summary = (
         f"I have successfully retrieved the occurrence record with GBIF ID {gbif_id}. "
     )

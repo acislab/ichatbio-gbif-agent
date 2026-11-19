@@ -1,12 +1,12 @@
-import os
 import logging
+import os
 import threading
-from typing import Any, Callable, TypeVar, Optional, Dict
-from functools import wraps
 from contextlib import asynccontextmanager
-from logging.handlers import TimedRotatingFileHandler
 from datetime import datetime, timezone
+from functools import wraps
+from logging.handlers import TimedRotatingFileHandler
 from pathlib import Path
+from typing import Any, Callable, TypeVar
 
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 
@@ -27,7 +27,7 @@ class LogConfig:
 
 # --- Thread-safe logger setup ---
 _logger_lock = threading.Lock()
-_logger_instance: Optional[logging.Logger] = None
+_logger_instance: logging.Logger | None = None
 
 
 def setup_logger() -> logging.Logger:
@@ -175,7 +175,7 @@ async def wrap_process(process: IChatBioAgentProcess):
     original_log = process.log
     original_create_artifact = process.create_artifact
 
-    async def safe_log_wrapper(msg: str, data: Optional[Dict] = None):
+    async def safe_log_wrapper(msg: str, data: dict | None = None):
         """Safely wrap process.log with error handling"""
         try:
             await log_process_event("process.log", message=msg, data=data)
@@ -323,7 +323,7 @@ def with_logging(entrypoint_id: str):
 
 
 # Health check function
-def get_logging_health() -> Dict[str, Any]:
+def get_logging_health() -> dict[str, Any]:
     """Get logging system health information"""
     try:
         return {

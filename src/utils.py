@@ -1,14 +1,13 @@
-from importlib import resources
-
-from pydantic import BaseModel, Field, model_validator, ConfigDict
-from typing import Optional, Union
 import dataclasses
 import json
-from src.log import logger
-from src.models.location import Location
-from src.models.bionomia import BionomiaNameRecord, NameMatchResult
-from src.instructor_client import get_client
+from importlib import resources
+from typing import Union
 
+from pydantic import BaseModel, Field, model_validator, ConfigDict
+from src.instructor_client import get_client
+from src.log import logger
+from src.models.bionomia import BionomiaNameRecord, NameMatchResult
+from src.models.location import Location
 from util_types import ParameterEnum
 
 
@@ -31,7 +30,7 @@ class NamedEntity(BaseModel):
     value: str = Field(description="The value of the entity")
     strict: bool = Field(
         description="True if the entity is a strict match; A strict match is when the value is enclosed in quotes like '\"John Doe\"'. in the user request.",
-        default=False,
+        default=False
     )
     type_if_other: str = Field(description="The type of the entity if it is OTHER")
 
@@ -47,34 +46,34 @@ class NamedEntity(BaseModel):
 
 class IdentifiedOrganism(BaseModel):
     term_found: str = Field(
-        description="The exact organism term as found in the user request (e.g., 'birds', 'monkey', 'Cercopithecidae')",
+        description="The exact organism term as found in the user request (e.g., 'birds', 'monkey', 'Cercopithecidae')"
     )
     is_already_scientific: bool = Field(
-        description="True if the term is already in scientific nomenclature, False if it's a common name",
+        description="True if the term is already in scientific nomenclature, False if it's a common name"
     )
     scientific_name: str = Field(
-        description="The scientific name (same as term_found if already scientific, or the translation if common name)",
+        description="The scientific name (same as term_found if already scientific, or the translation if common name)"
     )
     taxonomic_rank: str = Field(
-        description="The taxonomic rank of the scientific name (e.g., 'species', 'genus', 'family', 'order', 'class')",
+        description="The taxonomic rank of the scientific name (e.g., 'species', 'genus', 'family', 'order', 'class')"
     )
 
 
 class UserRequestExpansion(BaseModel):
     reasoning: str = Field(
-        description="Briefly describe: What organism terms found? What locations found? Any translations needed?",
+        description="Briefly describe: What organism terms found? What locations found? Any translations needed?"
     )
     organisms: list[IdentifiedOrganism] = Field(
         description="All organism terms found with their scientific names and taxonomic ranks",
-        default_factory=list,
+        default_factory=list
     )
     locations: list[Location] = Field(
         description="All location references found with their types and names",
-        default_factory=list,
+        default_factory=list
     )
     entities: list[NamedEntity] = Field(
         description="All named entities found with their types and values",
-        default_factory=list,
+        default_factory=list
     )
 
     @model_validator(mode="after")
@@ -142,7 +141,7 @@ async def _generate_resolution_message(
 
 async def _generate_artifact_description(details: str) -> str:
     class ArtifactDescription(BaseModel):
-        description: Optional[str] = Field(
+        description: str | None = Field(
             description="A concise characterization of the retrieved record statistics.",
             examples=[
                 "Occurrence records for species Rattus rattus across multiple countries.",
@@ -213,7 +212,7 @@ async def _preprocess_user_request(user_request: str):
     response = await client.chat.completions.create(
         messages=messages,
         response_model=UserRequestExpansion,
-        max_retries=2,
+        max_retries=2
     )
 
     logger.info(
@@ -240,7 +239,7 @@ class NameMatchSelectionResponse(BaseModel):
     monologue: str = Field(description="A monologue to explain the match reason")
     selected_matches: list[MatchSelection] = Field(
         default_factory=list,
-        description="List of selected match_ids with match_reason and score. Return only the best few matches (no more than 5), ordered by relevance.",
+        description="list of selected match_ids with match_reason and score. Return only the best few matches (no more than 5), ordered by relevance."
     )
 
 
@@ -303,7 +302,7 @@ async def find_best_name_match(
     selection_response = await client.chat.completions.create(
         messages=messages,
         response_model=NameMatchSelectionResponse,
-        max_retries=3,
+        max_retries=3
     )
 
     # Validate IDs and add match_reason and score to original match objects

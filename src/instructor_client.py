@@ -45,5 +45,5 @@ async def get_client():
     assert model is not None, "LLM environment variable must be set"
     return instructor.from_openai(
         AsyncOpenAI(**get_llm_credentials()),
-        model=model,
+        model=model
     )

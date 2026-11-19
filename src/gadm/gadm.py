@@ -1,10 +1,9 @@
 import asyncio
 import os
 import sqlite3
-from typing import List, Optional, Tuple
+from typing import Tuple
 
 from ichatbio.agent_response import IChatBioAgentProcess
-
 from src.log import logger
 from src.models.location import (
     Location,
@@ -33,14 +32,14 @@ def _open_gadm_connection(trace: bool = False) -> sqlite3.Connection:
     return conn
 
 
-def _get_feature_layers(conn: sqlite3.Connection) -> List[str]:
+def _get_feature_layers(conn: sqlite3.Connection) -> list[str]:
     """Retrieve all feature table names from the GeoPackage."""
     cur = conn.cursor()
     cur.execute("SELECT table_name FROM gpkg_contents WHERE data_type = 'features'")
     return [row[0] for row in cur.fetchall()]
 
 
-def _get_table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
+def _get_table_columns(conn: sqlite3.Connection, table: str) -> list[str]:
     """Retrieve column names for a specific table."""
     cur = conn.cursor()
     cur.execute(f'PRAGMA table_info("{table}")')
@@ -48,8 +47,8 @@ def _get_table_columns(conn: sqlite3.Connection, table: str) -> List[str]:
 
 
 def _build_name_match_clause(
-    level: int, place_name: str, cols: List[str]
-) -> Tuple[str, List[str]]:
+        level: int, place_name: str, cols: list[str]
+) -> Tuple[str, list[str]]:
     """
     Build SQL WHERE clause for matching place name at a specific GADM level.
 
@@ -80,8 +79,8 @@ def _build_name_match_clause(
 
 
 def _build_parent_constraint_clause(
-    level: int, parent_gid: Optional[str], cols: List[str]
-) -> Tuple[str, List[str]]:
+        level: int, parent_gid: str | None, cols: list[str]
+) -> Tuple[str, list[str]]:
     """
     Build SQL WHERE clause for parent GID constraint.
 
@@ -132,13 +131,13 @@ def _build_hierarchy_from_row(row: sqlite3.Row, max_level: int) -> GADMHierarchy
 
 
 def _find_place_in_layer(
-    conn: sqlite3.Connection,
-    layer: str,
-    level: int,
-    place_name: str,
-    parent_gid: Optional[str] = None,
-    query_trace: Optional[List[str]] = None,
-) -> Optional[sqlite3.Row]:
+        conn: sqlite3.Connection,
+        layer: str,
+        level: int,
+        place_name: str,
+        parent_gid: str | None = None,
+        query_trace: list[str] | None = None,
+) -> sqlite3.Row | None:
     """
     Search for a place in a specific GADM layer at a given level.
 
@@ -197,13 +196,13 @@ def _find_place_in_layer(
 
 
 def _find_place_across_layers(
-    conn: sqlite3.Connection,
-    layers: List[str],
-    level: int,
-    place_name: str,
-    parent_gid: Optional[str] = None,
-    query_trace: Optional[List[str]] = None,
-) -> Optional[sqlite3.Row]:
+        conn: sqlite3.Connection,
+        layers: list[str],
+        level: int,
+        place_name: str,
+        parent_gid: str | None = None,
+        query_trace: list[str] | None = None,
+) -> sqlite3.Row | None:
     """
     Search for a place across all GADM layers at a given level.
 
@@ -211,7 +210,7 @@ def _find_place_across_layers(
 
     Args:
         conn: Database connection
-        layers: List of layer names to search
+        layers: list of layer names to search
         level: GADM level to search at
         place_name: Name to search for
         parent_gid: Optional parent GID constraint
@@ -231,10 +230,10 @@ def _find_place_across_layers(
 
 
 def _create_match_result(
-    achieved_level: Optional[int],
-    achieved_row: Optional[sqlite3.Row],
-    expected_level: int,
-    query_trace: List[str],
+        achieved_level: int | None,
+        achieved_row: sqlite3.Row | None,
+        expected_level: int,
+        query_trace: list[str],
 ) -> GADMMatch:
     """
     Create a GADMMatch result from the matching process.
@@ -243,7 +242,7 @@ def _create_match_result(
         achieved_level: Deepest level successfully matched
         achieved_row: Database row for the achieved level
         expected_level: Most specific level that was requested
-        query_trace: List of executed SQL queries
+        query_trace: list of executed SQL queries
 
     Returns:
         GADMMatch with appropriate match type and hierarchy
@@ -265,7 +264,7 @@ def _create_match_result(
     return GADMMatch(
         match_type=match_type,
         gadm_hierarchy=hierarchy,
-        query_trace=query_trace,
+        query_trace=query_trace
     )
 
 
@@ -316,8 +315,8 @@ def perform_match(location: Location, trace: bool = False) -> GADMMatch:
 
         # Track progress through hierarchy
         current_parent_gid = None
-        achieved_level: Optional[int] = None
-        achieved_row: Optional[sqlite3.Row] = None
+        achieved_level: int | None = None
+        achieved_row: sqlite3.Row | None = None
 
         # Iteratively narrow search through each hierarchy level
         for level, level_name, place_name in hierarchy:
@@ -350,8 +349,8 @@ def perform_match(location: Location, trace: bool = False) -> GADMMatch:
 
 
 async def map_locations_to_gadm(
-    locations: list[Location],
-    process: IChatBioAgentProcess | None = None,
+        locations: list[Location],
+        process: IChatBioAgentProcess | None = None,
 ) -> list[ResolvedLocation]:
     # emit a process log to keep the stream alive during long silent GADM lookups (e.g. many coastal states).
     matched_locations: list[ResolvedLocation] = []

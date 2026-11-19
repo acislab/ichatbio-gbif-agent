@@ -1,16 +1,26 @@
-import uuid
 import json
-from typing import List
+import uuid
 from dataclasses import dataclass
+
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
-
-from src.utils import IdentifiedOrganism
+from src.bionomia import normalize_name
+from src.gadm.gadm import (
+    map_locations_to_gadm,
+    serialize_locations,
+)
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request, execute_paginated_request
+from src.gbif.parser import parse
+from src.gbif.resolve_parameters import (
+    resolve_names_to_taxonkeys,
+    resolve_pending_search_parameters,
+)
+from src.grscicoll import normalize_institution
+from src.log import with_logging, logger
 from src.models.entrypoints import GBIFOccurrenceSearchParams
 from src.models.validators import OccurrenceSearchParamsValidator
-from src.log import with_logging, logger
+from src.utils import IdentifiedOrganism
 from src.utils import (
     _generate_artifact_description,
     _generate_resolution_message,
@@ -20,18 +30,6 @@ from src.utils import (
     serialize_for_log,
     NamedEntityType,
 )
-from src.gbif.parser import parse
-from src.gbif.resolve_parameters import (
-    resolve_names_to_taxonkeys,
-    resolve_pending_search_parameters,
-)
-from src.gadm.gadm import (
-    map_locations_to_gadm,
-    serialize_locations,
-)
-from src.bionomia import normalize_name
-from src.grscicoll import normalize_institution
-
 
 description = """
 **Use Case:** Use this entrypoint to search for and retrieve a list of individual occurrence records that match specific filters. This is the primary tool for fetching raw data.
@@ -86,7 +84,7 @@ async def run(context: ResponseContext, request: str):
                             if result.get("fullname_reverse"):
                                 alternate_names.append(result["fullname_reverse"])
                             if result.get("label") and result["label"] != result.get(
-                                "fullname"
+                                    "fullname"
                             ):
                                 alternate_names.append(result["label"])
                             if result.get("other_names"):
@@ -95,9 +93,9 @@ async def run(context: ResponseContext, request: str):
                         else:
                             continue
                 elif entity.type in (
-                    NamedEntityType.INSTITUTION,
-                    NamedEntityType.MUSEUM,
-                    NamedEntityType.COLLECTION,
+                        NamedEntityType.INSTITUTION,
+                        NamedEntityType.MUSEUM,
+                        NamedEntityType.COLLECTION,
                 ):
                     institution = await normalize_institution(process, entity.value)
                     if institution:
@@ -202,7 +200,7 @@ async def run(context: ResponseContext, request: str):
             }
             pagination_message = "API pagination information of the response"
             if page_info.get("count") > (
-                page_info.get("limit") + page_info.get("offset")
+                    page_info.get("limit") + page_info.get("offset")
             ):
                 pagination_message = "Warning: The response is truncated due to pagination and only contain subset of the data available on GBIF."
             await process.log(pagination_message, data=page_info)
@@ -253,7 +251,7 @@ async def run(context: ResponseContext, request: str):
 
 
 def _generate_response_summary(
-    page_info: dict, portal_url: str, paginated: bool = False
+        page_info: dict, portal_url: str, paginated: bool = False
 ) -> str:
     if page_info.get("count") > 0:
         if paginated:
@@ -274,11 +272,11 @@ class ParameterResolutionResult:
 
 
 async def _get_parameters(
-    response: GBIFOccurrenceSearchParams,
-    organisms: List[IdentifiedOrganism] = None,
-    api: GbifApi = None,
-    process: IChatBioAgentProcess = None,
-    request: str = None,
+        response: GBIFOccurrenceSearchParams,
+        organisms: list[IdentifiedOrganism] = None,
+        api: GbifApi = None,
+        process: IChatBioAgentProcess = None,
+        request: str = None,
 ) -> ParameterResolutionResult:
     """
     Executes the occurrence search entrypoint. Searches for occurrence records using the provided
@@ -341,5 +339,5 @@ async def _get_parameters(
     return ParameterResolutionResult(
         search_params=params,
         clarification_needed=clarification_needed,
-        clarification_message=clarification_message,
+        clarification_message=clarification_message
     )

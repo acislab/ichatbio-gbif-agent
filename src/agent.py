@@ -1,14 +1,13 @@
-from typing import Any, Optional
-from typing_extensions import override
+from typing import Any
 
 from ichatbio.agent import IChatBioAgent
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentCard
 from pydantic import BaseModel
-
 from src.entrypoints import occurrences, species, registry
 from src.instructor_client import set_llm_credentials
 from src.log import logger
+from typing_extensions import override
 
 
 class GBIFAgent(IChatBioAgent):
@@ -31,12 +30,12 @@ class GBIFAgent(IChatBioAgent):
 
     @override
     async def run(
-        self,
-        context: ResponseContext,
-        request: str,
-        entrypoint: str,
-        params: Optional[BaseModel],
-        metadata: dict[str, Any] | None = None,
+            self,
+            context: ResponseContext,
+            request: str,
+            entrypoint: str,
+            params: BaseModel | None,
+            metadata: dict[str, Any] | None = None
     ):
         set_llm_credentials(metadata)
         logger.info(f"AGENT | Entrypoint={entrypoint} | Request={request}")

@@ -1,15 +1,14 @@
 import datetime
 import json
 from importlib import resources
-from typing import Type, Optional, TypeVar
+from typing import Type, TypeVar
 
 from instructor.core.exceptions import InstructorRetryException
 from pydantic import BaseModel, Field, create_model
-from tenacity import retry, stop_after_attempt, wait_exponential
-
 from src.instructor_client import get_client
 from src.models.location import ResolvedLocation, GadmMatchType
 from src.utils import UserRequestExpansion, IdentifiedOrganism
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 CURRENT_DATE = datetime.datetime.now().strftime("%B %d, %Y")
 
@@ -24,21 +23,21 @@ def create_response_model(parameter_model: Type[BaseModel]) -> Type[BaseModel]:
             ),
         ),
         params=(
-            Optional[parameter_model],
+            parameter_model | None,
             Field(
                 description="API parameters values supplied from provided in the user request",
                 default=None,
             ),
         ),
         unresolved_params=(
-            Optional[list[str]],
+            list[str] | None,
             Field(
                 description="The fields that need clarification to continue with the request.",
                 default=None,
             ),
         ),
         artifact_description=(
-            Optional[str],
+            str | None,
             Field(
                 description="A concise characterization of the retrieved records.",
                 examples=[
@@ -48,20 +47,20 @@ def create_response_model(parameter_model: Type[BaseModel]) -> Type[BaseModel]:
             ),
         ),
         clarification_needed=(
-            Optional[bool],
+            bool | None,
             Field(
                 description="If you are unable to determine the parameter for the value provided in the user request, set this to True",
                 default=None,
             ),
         ),
         clarification_reason=(
-            Optional[str],
+            str | None,
             Field(
                 description="The reason or a short note why the user request needs clarification about the parameter values",
                 default=None,
             ),
         ),
-        __base__=BaseModel,
+        __base__=BaseModel
     )
 
     class LLMResponseWithValidation(DynamicModel):
@@ -138,7 +137,9 @@ def format_locations_parsing_response(
     """
     return message
 
+
 T = TypeVar('T', bound=BaseModel)
+
 
 # For validation errors - shorter delays
 @retry(wait=wait_exponential(multiplier=1, min=1, max=10), stop=stop_after_attempt(3))
@@ -146,7 +147,7 @@ async def parse(
         request: str,
         entrypoint_id: str,
         parameters_model: Type[T],
-        preprocess_information: Optional[UserRequestExpansion] = None,
+        preprocess_information: UserRequestExpansion | None = None,
 ) -> BaseModel:
     response_model = create_response_model(parameters_model)
 

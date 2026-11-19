@@ -1,12 +1,12 @@
 import asyncio
+from typing import Any
+
 import requests
-from typing import Dict, Any
-
-from src.log import logger
 from ichatbio.agent_response import IChatBioAgentProcess
+from src.log import logger
 
 
-def execute_sync_request(url: str, max_retries: int = 3) -> Dict[str, Any]:
+def execute_sync_request(url: str, max_retries: int = 3) -> dict[str, Any]:
     """Execute a sync request with retry logic for 500 status codes."""
     for attempt in range(max_retries + 1):
         try:
@@ -40,11 +40,12 @@ def execute_sync_request(url: str, max_retries: int = 3) -> Dict[str, Any]:
     raise RuntimeError("Max retries exceeded")
 
 
-async def execute_request(url: str) -> Dict[str, Any]:
+async def execute_request(url: str) -> dict[str, Any]:
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, execute_sync_request, url)
 
-async def execute_multiple_requests(urls: Dict[str, str]) -> Dict[str, Any]:
+
+async def execute_multiple_requests(urls: dict[str, str]) -> dict[str, Any]:
     tasks = []
     for endpoint_name, url in urls.items():
         tasks.append(execute_request(url))
@@ -60,13 +61,14 @@ async def execute_multiple_requests(urls: Dict[str, str]) -> Dict[str, Any]:
 
     return combined_results
 
-async def fetch_gbif_data(url: str, timeout: int = 30) -> Dict[str, Any]:
+
+async def fetch_gbif_data(url: str, timeout: int = 30) -> dict[str, Any]:
     return await execute_request(url)
 
 
 async def execute_paginated_request(
-    search_params, api, total_limit: int, process: IChatBioAgentProcess
-) -> Dict[str, Any]:
+        search_params, api, total_limit: int, process: IChatBioAgentProcess
+) -> dict[str, Any]:
     """
     Execute multiple paginated requests to fetch up to total_limit records.
     Fetches 5 pages concurrently at a time for better performance.

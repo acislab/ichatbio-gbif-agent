@@ -1,7 +1,7 @@
 import json
 import uuid
 from dataclasses import dataclass
-from typing import Optional, List, Iterable
+from typing import Iterable
 
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
@@ -59,7 +59,7 @@ entrypoint = AgentEntrypoint(
 
 @dataclass
 class ParameterResolutionResult:
-    search_params: Optional[GBIFOccurrenceFacetsParams]
+    search_params: GBIFOccurrenceFacetsParams | None
     clarification_needed: bool
     clarification_message: str | None = None
 
@@ -252,7 +252,7 @@ def _generate_response_summary(page_info: dict, portal_url: str) -> str:
 async def _get_parameters(
         response: GBIFOccurrenceFacetsParams,
         request: str,
-        organisms: List[IdentifiedOrganism],
+        organisms: list[IdentifiedOrganism],
         process: IChatBioAgentProcess = None,
         api: GbifApi = None,
 ) -> ParameterResolutionResult:
@@ -318,7 +318,7 @@ async def _get_parameters(
     return ParameterResolutionResult(
         search_params=params,
         clarification_needed=clarification_needed,
-        clarification_message=clarification_message,
+        clarification_message=clarification_message
     )
 
 

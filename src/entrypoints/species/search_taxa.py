@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
 from models.base import ProductionBaseModel
@@ -37,16 +35,16 @@ GBIF_BACKBONE_DATASET_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"
 class TaxonLookupParameters(ProductionBaseModel):
     """Search parameters for retrieving taxonomic records from GBIF"""
 
-    taxon_key: Optional[str] = Field(
+    taxon_key: str | None = Field(
         None,
         description="A CoL XR taxon ID",
-        examples=["Q2M4", "P", "623RM"],
+        examples=["Q2M4", "P", "623RM"]
     )
 
-    taxon_name: Optional[str] = Field(
+    taxon_name: str | None = Field(
         None,
         description="The scientific name or vernacular name of the taxon",
-        examples=["Panthera onca", "jaguar", "Quercus robur", "oak tree"],
+        examples=["Panthera onca", "jaguar", "Quercus robur", "oak tree"]
     )
 
 
@@ -97,23 +95,23 @@ async def run(context: ResponseContext, request: str):
 class TaxonMatch(BaseModel):
     key: str
     scientificName: str
-    canonicalName: Optional[str] = None
-    rank: Optional[str] = None
-    kingdom: Optional[str] = None
-    phylum: Optional[str] = None
-    class_: Optional[str] = Field(None, alias="class")
-    order: Optional[str] = None
-    family: Optional[str] = None
-    genus: Optional[str] = None
-    isExtinct: Optional[bool] = None
+    canonicalName: str | None = None
+    rank: str | None = None
+    kingdom: str | None = None
+    phylum: str | None = None
+    class_: str | None = Field(None, alias="class")
+    order: str | None = None
+    family: str | None = None
+    genus: str | None = None
+    isExtinct: bool | None = None
 
 
 async def _find_taxon_by_name(
         api: GbifApi,
         user_query: str,
         name: str,
-        rank: Optional[TaxonomicRankEnum],
-        q_field: Optional[QueryFieldEnum],
+        rank: TaxonomicRankEnum | None,
+        q_field: QueryFieldEnum | None,
         process: IChatBioAgentProcess,
 ) -> str:
     await process.log(f"Searching for taxon by name: \"{name}\"")
@@ -122,7 +120,7 @@ async def _find_taxon_by_name(
         status=TaxonomicStatusEnum.ACCEPTED,
         datasetKey=GBIF_BACKBONE_DATASET_KEY,
         rank=rank,
-        qField=q_field,
+        qField=q_field
     )
 
     url = api.build_species_search_url(params)
@@ -173,7 +171,7 @@ async def _find_taxon_by_name(
 
 
 async def _find_best_taxon_match(
-        taxon_matches: List[TaxonMatch], user_query: str
+        taxon_matches: list[TaxonMatch], user_query: str
 ) -> TaxonMatch:
     client = await get_client()
 
@@ -188,7 +186,7 @@ async def _find_best_taxon_match(
                 "content": f"User query: {user_query}\n\nTaxon name to key: {taxon_matches}",
             },
         ],
-        response_model=TaxonMatch,
+        response_model=TaxonMatch
     )
 
     return response

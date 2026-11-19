@@ -2,7 +2,7 @@
 GBIF API URL Builder Module
 """
 import logging
-from typing import Dict, Any
+from typing import Any
 from urllib.parse import urlencode
 from uuid import UUID
 
@@ -22,13 +22,14 @@ from src.models.registry import GBIFGrSciCollInstitutionSearchParams
 
 COL_CHECKLIST_KEY = "7ddf754f-d193-4cc9-b351-99906754a03b"
 
+
 class GbifApi:
     def __init__(self):
         self.base_url = "https://api.gbif.org"
         self.portal_url = "https://gbif.org"
         self.httpx_client = AsyncClient(follow_redirects=True, timeout=10.)
 
-    async def get(self, url: str, max_attempts = 3) -> httpx.Response:
+    async def get(self, url: str, max_attempts=3) -> httpx.Response:
         response = await self.httpx_client.get(url)
         if response.status_code >= 500:
             logging.warning(
@@ -40,7 +41,7 @@ class GbifApi:
 
         return response
 
-    def _convert_to_api_params(self, params: BaseModel, with_checklist=False) -> Dict[str, Any]:
+    def _convert_to_api_params(self, params: BaseModel, with_checklist=False) -> dict[str, Any]:
         api_params = {}
 
         for field_name, value in params.model_dump(by_alias=True).items():
@@ -101,7 +102,7 @@ class GbifApi:
 
     def build_species_taxonomic_urls(
             self, params: GBIFSpeciesTaxonomicParams
-    ) -> Dict[str, str]:
+    ) -> dict[str, str]:
         if not params.key:
             return {}
 
@@ -116,7 +117,7 @@ class GbifApi:
         api_params = self._convert_to_api_params(params, with_checklist=True)
         return self._make_api_url("/v2/species/match", api_params)
 
-    def build_occurrence_by_id_url(self, gbif_id: int) -> str:
+    def build_occurrence_by_id_url(self, gbif_id) -> str:
         return self._make_api_url(f"/v1/occurrence/{gbif_id}")
 
     def build_dataset_search_url(self, params: GBIFDatasetSearchParams) -> str:

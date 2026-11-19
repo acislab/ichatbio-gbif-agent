@@ -7,7 +7,7 @@ Module for resolving taxonomic names to GBIF keys automatically.
 """
 
 from pydantic import BaseModel, Field
-from typing import Dict, List, Optional, Tuple
+from typing import Tuple
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
 from ichatbio.agent_response import IChatBioAgentProcess
@@ -16,37 +16,37 @@ from ichatbio.agent_response import IChatBioAgentProcess
 class TaxonomicExtraction(BaseModel):
     """Model for LLM-based taxonomic name extraction."""
 
-    families: List[str] = Field(
+    families: list[str] = Field(
         default=[],
-        description="List of family names mentioned in the text (e.g., Apidae, Felidae, Ursidae)",
+        description="list of family names mentioned in the text (e.g., Apidae, Felidae, Ursidae)"
     )
-    genera: List[str] = Field(
+    genera: list[str] = Field(
         default=[],
-        description="List of genus names mentioned in the text (e.g., Homo, Quercus, Pinus)",
+        description="list of genus names mentioned in the text (e.g., Homo, Quercus, Pinus)"
     )
-    species: List[str] = Field(
+    species: list[str] = Field(
         default=[],
-        description="List of species names (binomial) mentioned in the text (e.g., Homo sapiens, Quercus alba)",
+        description="list of species names (binomial) mentioned in the text (e.g., Homo sapiens, Quercus alba)"
     )
-    orders: List[str] = Field(
+    orders: list[str] = Field(
         default=[],
-        description="List of order names mentioned in the text (e.g., Primates, Carnivora, Lepidoptera)",
+        description="list of order names mentioned in the text (e.g., Primates, Carnivora, Lepidoptera)"
     )
-    classes: List[str] = Field(
+    classes: list[str] = Field(
         default=[],
-        description="List of class names mentioned in the text (e.g., Mammalia, Aves, Insecta)",
+        description="list of class names mentioned in the text (e.g., Mammalia, Aves, Insecta)"
     )
-    phylums: List[str] = Field(
+    phylums: list[str] = Field(
         default=[],
-        description="List of phylum names mentioned in the text (e.g., Chordata, Arthropoda, Mollusca)",
+        description="list of phylum names mentioned in the text (e.g., Chordata, Arthropoda, Mollusca)"
     )
-    kingdoms: List[str] = Field(
+    kingdoms: list[str] = Field(
         default=[],
-        description="List of kingdom names mentioned in the text (e.g., Animalia, Plantae, Fungi)",
+        description="list of kingdom names mentioned in the text (e.g., Animalia, Plantae, Fungi)"
     )
     note: str = Field(
         default="",
-        description="Note about the taxonomic names extracted; why you extracted them",
+        description="Note about the taxonomic names extracted; why you extracted them"
     )
 
 
@@ -76,7 +76,7 @@ resolvable_fields = {
 
 async def resolve_field_from_request(
         api: GbifApi, process: IChatBioAgentProcess, field_name: str, user_request: str
-) -> Optional[List[int]]:
+) -> list[int] | None:
     if field_name not in resolvable_fields:
         return None
     rank = resolvable_fields[field_name]
@@ -133,7 +133,7 @@ async def extract_taxonomic_names(
 
 async def resolve_name_to_key(
         api: GbifApi, process: IChatBioAgentProcess, name: str, expected_rank: str
-) -> Optional[int]:
+) -> int | None:
     try:
         params = GBIFSpeciesNameMatchParams(scientificName=name)
         url = api.build_species_match_url(params)
@@ -165,16 +165,16 @@ async def resolve_name_to_key(
 
 
 async def resolve_pending_search_parameters(
-        unresolved_params: List[str],
+        unresolved_params: list[str],
         user_request: str,
         api: GbifApi,
         process: IChatBioAgentProcess,
-) -> Tuple[Dict[str, List[int]], List[str]]:
+) -> Tuple[dict[str, list[int]], list[str]]:
     """
     Attempt to resolve clarification fields automatically.
 
     Args:
-        unresolved_params: List of fields that need clarification
+        unresolved_params: list of fields that need clarification
         user_request: Original user request
         api: GBIF API instance
         process: Process for logging
@@ -199,7 +199,7 @@ async def resolve_pending_search_parameters(
 
 
 async def resolve_names_to_taxonkeys(
-        api: GbifApi, organisms: List[IdentifiedOrganism], process: IChatBioAgentProcess
+        api: GbifApi, organisms: list[IdentifiedOrganism], process: IChatBioAgentProcess
 ) -> list:
     """
     Resolve scientific names to GBIF taxon keys using the species match API.
@@ -217,8 +217,6 @@ async def resolve_names_to_taxonkeys(
     for organism in organisms:
         data = organism.model_dump(exclude_none=True, mode="json")
         await process.log(f"Resolving organism", data=data)
-        result = None
-        url = None
         name = data.get("scientific_name", None)
         rank = data.get("taxonomic_rank", None)
         if not name:

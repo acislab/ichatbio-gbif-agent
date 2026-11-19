@@ -1,4 +1,5 @@
-from typing import Optional, List, Tuple, Dict
+from typing import Tuple
+
 from pydantic import BaseModel, Field
 from src.enums.common import CountryEnum
 from util_types import ParameterEnum
@@ -19,34 +20,33 @@ class Location(BaseModel):
         Location(country="USA", state="California", locality="San Francisco")
     """
 
-    continent: Optional[str] = Field(
+    continent: str | None = Field(
         None, description="Continent name (e.g., 'North America', 'Asia', 'Europe')"
     )
-    country: Optional[str] = Field(
+    country: str | None = Field(
         None, description="Country name (e.g., 'United States', 'India', 'Brazil')"
     )
-    country_iso: Optional[CountryEnum] = Field(
+    country_iso: CountryEnum | None = Field(
         None,
-        description="ISO 3166-1 alpha-2 country code (e.g., 'US', 'IN', 'BR')",
-        examples=[CountryEnum.US, CountryEnum.IN, CountryEnum.BR],
+        description="ISO 3166-1 alpha-2 country code (e.g., 'US', 'IN', 'BR')"
     )
-    state: Optional[str] = Field(
+    state: str | None = Field(
         None,
-        description="State/province name (e.g., 'California', 'Karnataka', 'Ontario')",
+        description="State/province name (e.g., 'California', 'Karnataka', 'Ontario')"
     )
-    state_iso: Optional[str] = Field(
+    state_iso: str | None = Field(
         None, description="State/province code if applicable (e.g., 'CA', 'FL', 'NY')"
     )
-    county: Optional[str] = Field(
+    county: str | None = Field(
         None, description="County/district name (e.g., 'Alachua', 'Pauri', 'King')"
     )
-    locality: Optional[str] = Field(
+    locality: str | None = Field(
         None,
-        description="City/town/locality name (e.g., 'Gainesville', 'Mumbai', 'Montreal')",
+        description="City/town/locality name (e.g., 'Gainesville', 'Mumbai', 'Montreal')"
     )
-    protected_area: Optional[str] = Field(
+    protected_area: str | None = Field(
         None,
-        description="Protected area name (e.g., 'Yellowstone', 'Kruger', 'Serengeti')",
+        description="Protected area name (e.g., 'Yellowstone', 'Kruger', 'Serengeti')"
     )
 
     # ========================================================================
@@ -54,7 +54,7 @@ class Location(BaseModel):
     # ========================================================================
 
     @property
-    def most_specific(self) -> Tuple[Optional[str], Optional[str]]:
+    def most_specific(self) -> Tuple[str | None, str | None]:
         """
         Return (level, name) of most specific location.
 
@@ -79,12 +79,12 @@ class Location(BaseModel):
         return (None, None)
 
     @property
-    def hierarchy_list(self) -> List[Tuple[str, str]]:
+    def hierarchy_list(self) -> list[Tuple[str, str]]:
         """
         Return list of (level, name) from least to most specific.
 
         Returns:
-            List of tuples: [(level_name, place_name), ...]
+            list of tuples: [(level_name, place_name), ...]
 
         Example:
             >>> loc = Location(country="USA", state="Florida", county="Alachua")
@@ -106,14 +106,14 @@ class Location(BaseModel):
             result.append(("protected_area", self.protected_area))
         return result
 
-    def get_hierarchy(self) -> List[Tuple[int, str, str]]:
+    def get_hierarchy(self) -> list[Tuple[int, str, str]]:
         """
         Get location hierarchy as list of (gadm_level, level_name, place_name).
 
         Used by GADM resolution module.
 
         Returns:
-            List from most specific to least specific:
+            list from most specific to least specific:
             [(3, 'locality', 'Gainesville'), (2, 'county', 'Alachua'), (1, 'state', 'Florida'), (0, 'country', 'USA')]
 
         Example:
@@ -140,7 +140,7 @@ class Location(BaseModel):
 
         return hierarchy
 
-    def get_parent_constraints(self, for_level: int) -> Dict[int, str]:
+    def get_parent_constraints(self, for_level: int) -> dict[int, str]:
         """
         Get parent location names for disambiguating at a given level.
 
@@ -150,7 +150,7 @@ class Location(BaseModel):
             for_level: GADM level to get parents for
 
         Returns:
-            Dict mapping parent levels to names
+            dict mapping parent levels to names
 
         Example:
             >>> loc = Location(country="USA", state="Florida", county="Alachua")
@@ -213,10 +213,10 @@ class GadmMatchType(ParameterEnum):
 class GADMHierarchyLevel(BaseModel):
     """Represents a single level in the GADM administrative hierarchy."""
 
-    name: Optional[str] = Field(
+    name: str | None = Field(
         default=None, description="Administrative division name at this level"
     )
-    gid: Optional[str] = Field(
+    gid: str | None = Field(
         default=None, description="GADM identifier at this level"
     )
 
@@ -224,16 +224,16 @@ class GADMHierarchyLevel(BaseModel):
 class GADMHierarchy(BaseModel):
     """Complete GADM administrative hierarchy."""
 
-    level_0: Optional[GADMHierarchyLevel] = Field(
+    level_0: GADMHierarchyLevel | None = Field(
         default=None, description="Country level"
     )
-    level_1: Optional[GADMHierarchyLevel] = Field(
+    level_1: GADMHierarchyLevel | None = Field(
         default=None, description="First administrative division (state/province)"
     )
-    level_2: Optional[GADMHierarchyLevel] = Field(
+    level_2: GADMHierarchyLevel | None = Field(
         default=None, description="Second administrative division (county/district)"
     )
-    level_3: Optional[GADMHierarchyLevel] = Field(
+    level_3: GADMHierarchyLevel | None = Field(
         default=None, description="Third administrative division"
     )
 
@@ -245,15 +245,15 @@ class GADMMatch(BaseModel):
 
     match_type: GadmMatchType = Field(
         default=GadmMatchType.NONE,
-        description="Amount of location information that was found in GADM",
+        description="Amount of location information that was found in GADM"
     )
-    gadm_hierarchy: Optional[GADMHierarchy] = Field(
+    gadm_hierarchy: GADMHierarchy | None = Field(
         default=None,
-        description="Hierarchy of location information that was found in GADM",
+        description="Hierarchy of location information that was found in GADM"
     )
-    query_trace: Optional[List[str]] = Field(
+    query_trace: list[str] | None = Field(
         default=None,
-        description="Trace of queries made to GADM",
+        description="Trace of queries made to GADM"
     )
 
 
@@ -272,25 +272,25 @@ class EnrichedLocation(BaseModel):
     # GADM enrichment
     was_found_in_gadm: bool = Field(
         default=False,
-        description="True if location was found and validated in GADM database",
+        description="True if location was found and validated in GADM database"
     )
-    gadm_gid: Optional[str] = Field(
+    gadm_gid: str | None = Field(
         default=None, description="GADM ID (e.g., 'USA.11.1_1')"
     )
-    gadm_level: Optional[int] = Field(
+    gadm_level: int | None = Field(
         default=None,
-        description="Administrative level in GADM (0=country, 1=state, etc.)",
+        description="Administrative level in GADM (0=country, 1=state, etc.)"
     )
-    gadm_canonical_name: Optional[str] = Field(
+    gadm_canonical_name: str | None = Field(
         default=None, description="Canonical name from GADM"
     )
-    gadm_hierarchy: Optional[GADMHierarchy] = Field(
+    gadm_hierarchy: GADMHierarchy | None = Field(
         default=None, description="Complete administrative hierarchy from GADM"
     )
-    resolution_trace: Optional[list] = Field(
+    resolution_trace: list | None = Field(
         default=None, description="SQL queries executed during GADM resolution"
     )
-    validation_note: Optional[str] = Field(
+    validation_note: str | None = Field(
         default=None,
-        description="Notes about validation process (e.g., 'exact match', 'not found')",
+        description="Notes about validation process (e.g., 'exact match', 'not found')"
     )

@@ -1,27 +1,29 @@
 """Test"""
 import asyncio
-from typing import List
+
 from ichatbio.agent_response import ResponseContext
 from src.agent import GBIFAgent
 
 
 class SimpleInMemoryContext(ResponseContext):
     """Simple in-memory context to collect messages"""
+
     def __init__(self):
         self.messages = []
         self.replies = []
-    
+
     async def reply(self, message: str):
         self.replies.append(message)
         print(f"Reply: {message}")
-    
+
     def begin_process(self, title: str):
         return SimpleProcess(title, self.messages)
 
 
 class SimpleProcess:
     """Simple process to collect logs and artifacts"""
-    def __init__(self, title: str, messages: List):
+
+    def __init__(self, title: str, messages: list):
         self.title = title
         self.messages = messages
         print(f"Starting process: {title}")
@@ -48,6 +50,7 @@ class SimpleProcess:
             "metadata": metadata
         }
         self.messages.append(artifact)
+
 
 Q1 = 'Who collected the oldest plant record in Palm Springs, California?'
 Q2 = "Find the records of Apis mellifera colleceted after 2020 by human observation"
@@ -128,7 +131,7 @@ async def test_species_taxonomic_information():
         context=context,
         request=Q8,
         params=None,
-        entrypoint="species_taxonomic_information",
+        entrypoint="species_taxonomic_information"
     )
 
 

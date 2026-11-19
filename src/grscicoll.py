@@ -1,17 +1,17 @@
 """
 GrSciColl Institution Normalization - Simple single function
 """
-from typing import Optional
+
 from ichatbio.agent_response import IChatBioAgentProcess
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
-from src.models.registry import GBIFGrSciCollInstitutionSearchParams
 from src.models.grscicoll import GrSciCollInstitutionRecord
+from src.models.registry import GBIFGrSciCollInstitutionSearchParams
 
 
 async def normalize_institution(
-    process: IChatBioAgentProcess, institution_name: str, limit: int = 20
-) -> Optional[GrSciCollInstitutionRecord]:
+        process: IChatBioAgentProcess, institution_name: str, limit: int = 20
+) -> GrSciCollInstitutionRecord | None:
     """
     Normalize an institution name using GBIF GrSciColl API.
 
@@ -22,7 +22,7 @@ async def normalize_institution(
     """
     await process.log(
         "Searching GBIF GrSciColl API for institution",
-        data={"institution_name": institution_name},
+        data={"institution_name": institution_name}
     )
 
     try:
@@ -77,4 +77,3 @@ async def normalize_institution(
     except Exception as e:
         await process.log(f"Error in institution normalization: {str(e)}")
         return None
-
