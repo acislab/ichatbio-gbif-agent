@@ -223,8 +223,9 @@ async def run(context: ResponseContext, request: str):
                 description=artifact_description,
                 content=content_bytes,
                 metadata={
+                    "derived_from": api_url,
                     "portal_url": portal_url,
-                    "data_source": "GBIF Occurrence",
+                    "source": "GBIF",
                 },
             )
 

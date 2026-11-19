@@ -146,7 +146,7 @@ async def resolve_name_to_key(
             description=f"GBIF Species Match API call results for: {name}",
             uris=[url],
             metadata={
-                "data_source": "GBIF Species Match",
+                "source": "GBIF",
             },
         )
         if result.get("usage") and result.get("usage", {}).get("key"):
@@ -331,7 +331,7 @@ async def resolve_names_to_taxonkeys(
                     description=f"GBIF Species Match API call results for: {name}",
                     uris=[url],
                     metadata={
-                        "data_source": "GBIF Species Match",
+                        "source": "GBIF",
                     },
                 )
                 continue
@@ -339,7 +339,7 @@ async def resolve_names_to_taxonkeys(
                 await process.log(
                     f"No match or alternatives found for '{name}'",
                     data={
-                        "data_source": f"GBIF Species Match results for: {name}",
+                        "source": "GBIF",
                         "api_url": url,
                     },
                 )
@@ -349,7 +349,7 @@ async def resolve_names_to_taxonkeys(
             await process.log(
                 f"Failed to resolve name '{name}': {e}",
                 data={
-                    "data_source": f"GBIF Species Match for: {name}",
+                    "source": f"GBIF",
                     "error": str(e),
                 },
             )

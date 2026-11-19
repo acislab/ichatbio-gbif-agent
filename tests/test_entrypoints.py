@@ -16,11 +16,12 @@ async def test_find_occurrence_records(agent, context, messages):
         mock_execute.return_value = mock_response
         await agent.run(context, "Find Puma concolor", "find_occurrence_records", None)
 
-    artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
-    assert artifacts, "Expected at least one ArtifactResponse"
-    # The agent first does species matching, so we need to check for that
-    species_artifacts = [a for a in artifacts if a.metadata.get("data_source") == "GBIF Species Match"]
-    assert species_artifacts, "Expected species match artifact"
+    artifacts = (m for m in messages if isinstance(m, ArtifactResponse))
+
+    # Make sure a species match happened before the occurrence search
+    it = iter(artifacts)
+    assert any((a.uris[0].startswith("https://api.gbif.org/v2/species/match") for a in it))
+    assert any((a.uris[0].startswith("https://api.gbif.org/v1/occurrence/search") for a in it))
 
 
 @pytest.mark.asyncio
@@ -37,11 +38,13 @@ async def test_count_occurrence_records(agent, context, messages):
         await agent.run(
             context, "Count Puma concolor by country", "count_occurrence_records", None
         )
+
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
-    assert artifacts, "Expected at least one ArtifactResponse"
-    # The agent first does species matching, so we need to check for that
-    species_artifacts = [a for a in artifacts if a.metadata.get("data_source") == "GBIF Species Match"]
-    assert species_artifacts, "Expected species match artifact"
+
+    # Make sure a species match happened before the occurrence search
+    it = iter(artifacts)
+    assert any((a.uris[0].startswith("https://api.gbif.org/v2/species/match") for a in it))
+    assert any((a.metadata.get("derived_from", "").startswith("https://api.gbif.org/v1/occurrence/search?facet") for a in it))
 
 
 @pytest.mark.asyncio
@@ -58,8 +61,7 @@ async def test_find_occurrence_by_id(agent, context, messages):
         await agent.run(context, "Find occurrence 1258202881", "find_occurrence_by_id", None)
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
-    assert artifacts, "Expected at least one ArtifactResponse"
-    assert artifacts[0].metadata["data_source"] == "GBIF Occurrence"
+    assert artifacts[0].uris[0].startswith("https://api.gbif.org/v1/occurrence/")
 
 
 @pytest.mark.asyncio
@@ -82,7 +84,7 @@ async def test_find_species_records(agent, context, messages):
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
     assert artifacts, "Expected at least one ArtifactResponse"
-    assert artifacts[0].metadata["data_source"] == "GBIF Species"
+    assert artifacts[0].uris[0].startswith("https://api.gbif.org/v1/species/")
 
 
 @pytest.mark.asyncio
@@ -100,7 +102,7 @@ async def test_count_species_records(agent, context, messages):
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
     assert artifacts, "Expected at least one ArtifactResponse"
-    assert artifacts[0].metadata["data_source"] == "GBIF Species"
+    assert artifacts[0].uris[0].startswith("https://api.gbif.org/v1/species/")
 
 
 @pytest.mark.asyncio
@@ -144,4 +146,4 @@ async def test_find_datasets(agent, context, messages):
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
     assert artifacts, "Expected at least one ArtifactResponse"
-    assert artifacts[0].metadata["data_source"] == "GBIF Registry"
+    assert artifacts[0].uris[0].startswith("https://api.gbif.org/v1/dataset/search")

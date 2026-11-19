@@ -94,7 +94,7 @@ async def run(context: ResponseContext, request: str):
                 uris=[api_url],
                 metadata={
                     "portal_url": portal_url,
-                    "data_source": "GBIF Registry",
+                    "source": "GBIF",
                 },
             )
 

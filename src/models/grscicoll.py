@@ -1,8 +1,9 @@
 """
 GrSciColl API models for institution normalization and matching.
 """
+from typing import Optional, Union
+
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, TypedDict, Union
 
 
 class AlternativeCode(BaseModel):

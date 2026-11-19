@@ -217,7 +217,7 @@ async def run(context: ResponseContext, request: str):
                     content=json.dumps(raw_response, indent=2).encode("utf-8"),
                     metadata={
                         "portal_url": portal_url,
-                        "data_source": "GBIF Occurrence",
+                        "source": "GBIF",
                         "total_records_retrieved": len(raw_response.get("results", [])),
                     },
                 )
@@ -228,7 +228,7 @@ async def run(context: ResponseContext, request: str):
                     uris=[api_url],
                     metadata={
                         "portal_url": portal_url,
-                        "data_source": "GBIF Occurrence",
+                        "source": "GBIF",
                     },
                 )
 
