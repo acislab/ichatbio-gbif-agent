@@ -1,18 +1,19 @@
-from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
-from ichatbio.types import AgentEntrypoint
-from models.base import ProductionBaseModel
-from models.entrypoints import GBIFSpeciesTaxonomicParams
-from pydantic import BaseModel, Field
 from enums.species import (
     TaxonomicStatusEnum,
     TaxonomicRankEnum,
     QueryFieldEnum,
 )
 from gbif.api import GbifApi
+from gbif.contants import COL_CHECKLIST_KEY
 from gbif.parser import parse
+from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
+from ichatbio.types import AgentEntrypoint
 from instructor_client import get_client
 from log import with_logging
+from models.base import ProductionBaseModel
 from models.entrypoints import GBIFSpeciesSearchParams
+from models.entrypoints import GBIFSpeciesTaxonomicParams
+from pydantic import BaseModel, Field
 
 description = f"""
 **Use Case:** Use this entrypoint to retrieve taxonomic information (like the full parent hierarchy, child taxa, or synonyms) that matches with a scientificName or taxonKey. It can also be used to find specific identifiers such as taxonKey, kingdomKey, etc in GBIF Backbone Taxonomy.
@@ -28,8 +29,6 @@ entrypoint = AgentEntrypoint(
     id="find_taxonomic_information",
     description=description
 )
-
-GBIF_BACKBONE_DATASET_KEY = "d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"
 
 
 class TaxonLookupParameters(ProductionBaseModel):
@@ -118,7 +117,7 @@ async def _find_taxon_by_name(
     params = GBIFSpeciesSearchParams(
         q=name,
         status=TaxonomicStatusEnum.ACCEPTED,
-        datasetKey=GBIF_BACKBONE_DATASET_KEY,
+        datasetKey=COL_CHECKLIST_KEY,
         rank=rank,
         qField=q_field
     )

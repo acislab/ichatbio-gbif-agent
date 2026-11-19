@@ -7,6 +7,7 @@ from urllib.parse import urlencode
 from uuid import UUID
 
 import httpx
+from gbif.contants import COL_CHECKLIST_KEY
 from httpx import AsyncClient
 from models.entrypoints import (
     GBIFOccurrenceSearchParams,
@@ -19,8 +20,6 @@ from models.entrypoints import (
 )
 from models.registry import GBIFGrSciCollInstitutionSearchParams
 from pydantic import BaseModel
-
-COL_CHECKLIST_KEY = "7ddf754f-d193-4cc9-b351-99906754a03b"
 
 
 class GbifApi:
