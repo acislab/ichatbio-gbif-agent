@@ -16,13 +16,13 @@ from models.entrypoints import GBIFSpeciesTaxonomicParams
 from pydantic import BaseModel, Field
 
 description = f"""
-**Use Case:** Use this entrypoint to retrieve taxonomic information (like the full parent hierarchy, child taxa, or synonyms) that matches with a scientificName or taxonKey. It can also be used to find specific identifiers such as taxonKey, kingdomKey, etc in GBIF Backbone Taxonomy.
+**Use Case:** Use this entrypoint to retrieve taxonomic information (like the full parent hierarchy, child taxa, or synonyms) that matches with a scientificName or taxonKey. It can also be used to find specific identifiers such as taxonKey, kingdomKey, etc. Uses the Catalogue of Life taxonomy (CoL-XR).
 
 **Triggers On:** User requests may ask to find, get, or show the "taxonomic information of", "synonyms of", "children of", "parents of", "kingdomKey/taxonKey/classKey...etc" for a taxon.
 
 **Key Inputs:** Requires a taxonKey or a scientificName. It also accepts a rank and a qField to narrow down the search results if the user provides a name; Make sure to include the fields in the request.
 
-If only name is provided, it will try to first search for the taxon usageKey in the GBIF Backbone Taxonomy and then retrieve the taxonomic information. If a taxonKey is provided, it will directly retrieve the taxonomic information.
+If only name is provided, it will try to first search for the taxon usageKey in the Catalogue of Life taxonomy and then retrieve the taxonomic information. If a taxonKey is provided, it will directly retrieve the taxonomic information.
 """
 
 entrypoint = AgentEntrypoint(
@@ -161,7 +161,7 @@ async def _find_taxon_by_name(
         )
 
         best_match = await _find_best_taxon_match(taxon_matches, user_query)
-        await process.log(f"Selected best match: {best_match.model_dump_json()}")
+        await process.log("Best match:", best_match.model_dump())
         return best_match.key
 
     except Exception as e:

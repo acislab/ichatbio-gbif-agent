@@ -506,7 +506,7 @@ class DatasetCollectionFilters(ProductionBaseModel):
     datasetName: str | None = Field(
         None,
         description="The name identifying the data set from which the record was derived",
-        examples=["GBIF Backbone Taxonomy"]
+        examples=["eBird"]
     )
 
     collectionCode: list[str] | None = Field(

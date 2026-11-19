@@ -1,5 +1,3 @@
-from models.base import ProductionBaseModel
-from pydantic import Field
 from enums.species import (
     NameTypeEnum,
     TaxonomicRankEnum,
@@ -11,6 +9,9 @@ from enums.species import (
     HabitatEnum,
     QueryFieldEnum,
 )
+from gbif.contants import COL_CHECKLIST_KEY
+from models.base import ProductionBaseModel
+from pydantic import Field
 
 
 class SearchFilters(ProductionBaseModel):
@@ -40,7 +41,7 @@ class DatasetFilters(ProductionBaseModel):
     datasetKey: str | None = Field(
         None,
         description="A UUID of a checklist dataset to limit the search scope. Useful for searching within specific taxonomic authorities or regional checklists.",
-        examples=["d7dddbf4-2cf0-4f39-9b2a-bb099caae36c"],  # GBIF Backbone Taxonomy
+        examples=[COL_CHECKLIST_KEY],
     )
 
     constituentKey: str | None = Field(
