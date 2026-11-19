@@ -15,11 +15,11 @@ from pydantic import Field
 
 
 class SearchFilters(ProductionBaseModel):
-    """Full-text search filters for species (q parameter for broad search, qField to narrow to specific fields)."""
+    """Full-text search filters for taxon records (q parameter for broad search, qField to narrow to specific fields)."""
 
     q: str | None = Field(
         None,
-        description="Simple full text search parameter covering scientific and vernacular names, species descriptions, distribution and entire classification. The value can be a simple word or phrase. Wildcards are not supported. Results are ordered by relevance. Only use this parameter if the user's request is vague and none of the other specific parameters are available.",
+        description="Simple full text search parameter covering scientific and vernacular names, taxon descriptions, distribution and entire classification. The value can be a simple word or phrase. Wildcards are not supported. Results are ordered by relevance. Only use this parameter if the user's request is vague and none of the other specific parameters are available.",
         examples=[
             "Puma concolor",
             "jaguar",
@@ -31,12 +31,12 @@ class SearchFilters(ProductionBaseModel):
     )
     qField: QueryFieldEnum | None = Field(
         None,
-        description="Use it along with q parameter. Limits the q parameter to search in a specific field. Use it to narrow down the results. Use SCIENTIFIC_NAME when you know or have a good estimate of the scientific name of the species you are searching for. Use VERNACULAR_NAME when you want to find a species using its common name, which can vary by region or language. Use DESCRIPTION when you are looking for a species based on a keyword found in its general description rather than its name.",
+        description="Use it along with q parameter. Limits the q parameter to search in a specific field. Use it to narrow down the results. Use SCIENTIFIC_NAME when you know or have a good estimate of the scientific name of the taxon you are searching for. Use VERNACULAR_NAME when you want to find a species using its common name, which can vary by region or language. Use DESCRIPTION when you are looking for a taxon based on a keyword found in its general description rather than its name.",
     )
 
 
 class DatasetFilters(ProductionBaseModel):
-    """Filters for limiting species searches to specific datasets or checklists."""
+    """Filters for limiting searches to specific datasets or taxonomic checklists."""
 
     datasetKey: str | None = Field(
         None,
@@ -52,7 +52,7 @@ class DatasetFilters(ProductionBaseModel):
 
 
 class TaxonomicFilters(ProductionBaseModel):
-    """Filters for species by taxonomic rank, higher taxon, or taxonomic status."""
+    """Filters for taxa by rank, higher taxon, or taxonomic status."""
 
     rank: TaxonomicRankEnum | None = Field(
         None,
@@ -72,7 +72,7 @@ class TaxonomicFilters(ProductionBaseModel):
 
 
 class NameFilters(ProductionBaseModel):
-    """Filters for species by name type, nomenclatural status, and origin."""
+    """Filters for taxa by name type, nomenclatural status, and origin."""
 
     nameType: NameTypeEnum | None = Field(
         None,
@@ -91,7 +91,7 @@ class NameFilters(ProductionBaseModel):
 
 
 class EcologyFilters(ProductionBaseModel):
-    """Filters for species by extinction status, habitat, and conservation threat status."""
+    """Filters for taxa by extinction status, habitat, and conservation threat status."""
 
     isExtinct: bool | None = Field(
         None,
@@ -110,7 +110,7 @@ class EcologyFilters(ProductionBaseModel):
 
 
 class QualityFilters(ProductionBaseModel):
-    """Filters for species by data quality issues identified during GBIF indexing."""
+    """Filters for taxa by data quality issues identified during GBIF indexing."""
 
     issue: IssueEnum | None = Field(
         None,

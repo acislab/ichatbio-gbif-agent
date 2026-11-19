@@ -1,11 +1,11 @@
 import json
 import uuid
 
-from ichatbio.agent_response import ResponseContext
-from ichatbio.types import AgentEntrypoint
 from gbif.api import GbifApi
 from gbif.fetch import execute_request
 from gbif.parser import parse
+from ichatbio.agent_response import ResponseContext
+from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.validators import SpeciesSearchParamsValidator
 from utils import _preprocess_user_request, serialize_organisms
@@ -25,12 +25,12 @@ Limitations: It cannot do searches for specific identifiers such as taxonKey, ki
 """
 
 entrypoint = AgentEntrypoint(
-    id="find_species_records",
+    id="find_taxon_records",
     description=description
 )
 
 
-@with_logging("find_species_records")
+@with_logging("find_taxon_records")
 async def run(context: ResponseContext, request: str):
     """
     Executes the species search entrypoint. Searches for species name usages using the provided
@@ -90,7 +90,7 @@ async def run(context: ResponseContext, request: str):
         await process.log(f"Constructed API URL: {api_url}")
 
         try:
-            await process.log("Querying GBIF for species data...")
+            await process.log("Querying GBIF for taxonomic information...")
             raw_response = await execute_request(api_url)
             status_code = raw_response.get("status_code", 200)
             if status_code != 200:
@@ -140,14 +140,14 @@ async def run(context: ResponseContext, request: str):
                 },
             )
             await context.reply(
-                f"I encountered an error while trying to search for species: {str(e)}",
+                f"I encountered an error while trying to search for taxon: {str(e)}",
             )
 
 
 def _generate_response_summary(page_info: dict, portal_url: str) -> str:
     if page_info.get("count") > 0:
-        summary = f"I have found {page_info.get('count')} species records matching your criteria. "
+        summary = f"I have found {page_info.get('count')} taxon records matching your criteria. "
     else:
-        summary = "I have not found any species records matching your criteria. "
+        summary = "I have not found any taxon records matching your criteria. "
     summary += f"The results can also be viewed in the GBIF portal at {portal_url}."
     return summary

@@ -80,6 +80,7 @@ async def resolve_field_from_request(
         return None
     rank = resolvable_fields[field_name]
     extraction = await extract_taxonomic_names(process, user_request)
+    # TODO: looks dubious
     rank_mapping = {
         "family": extraction.families,
         "genus": extraction.genera,

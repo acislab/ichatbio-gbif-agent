@@ -6,10 +6,10 @@ class PaginationParams(ProductionBaseModel):
     """Pagination controls for search results (limit, offset, or page-based navigation)."""
 
     limit: int | None = Field(
-        20,
+        1000,
         ge=0,
         le=1000,
-        description="Controls the number of results in the page. Using too high a value will be overwritten with the maximum threshold. Default varies by service (20 for species, 100 for occurrences)."
+        description="Controls the number of results in the page. Using too high a value will be overwritten with the maximum threshold"
     )
 
     offset: int | None = Field(
@@ -21,7 +21,7 @@ class PaginationParams(ProductionBaseModel):
     page: int | None = Field(
         None,
         ge=1,
-        description="Page number for pagination (alternative to offset). Use with limit for pagination. For example, limit=20 and page=3 returns the third page of 20 results. Available for species searches."
+        description="Page number for pagination (alternative to offset). Use with limit for pagination. For example, limit=20 and page=3 returns the third page of 20 results."
     )
 
 

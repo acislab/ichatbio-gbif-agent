@@ -14,7 +14,7 @@ class TaxonomicFilters(ProductionBaseModel):
 
     scientificName: list[str] | None = Field(
         None,
-        description="Only use this parameter if the user has provided a scientific name. All included and synonym taxa are included in the search. Under the hood a call to the species match service is done first to retrieve a taxonKey. Only unique scientific names will return results, homonyms (many monomials) return nothing! Consider to use the taxonKey parameter instead and the species match service directly",
+        description="Only use this parameter if the user has provided a scientific name. All included and synonym taxa are included in the search. Under the hood a call to the taxon match service is done first to retrieve a taxonKey. Only unique scientific names will return results, homonyms (many monomials) return nothing! Consider to use the taxonKey parameter instead and the taxon match service directly",
         examples=[
             ["Quercus robur"],
             ["Homo sapiens", "Canis lupus"],

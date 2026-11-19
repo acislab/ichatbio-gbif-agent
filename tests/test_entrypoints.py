@@ -71,7 +71,7 @@ async def test_find_species_records(agent, context, messages):
     mock_response = {
         "status_code": 200,
         "count": 15,
-        "results": [{"key": 123456789, "scientificName": "Panthera leo", "rank": "SPECIES"}],
+        "results": [{"key": "4CGXP", "scientificName": "Panthera leo", "rank": "SPECIES"}],
         "facets": []
     }
 
@@ -80,7 +80,7 @@ async def test_find_species_records(agent, context, messages):
         await agent.run(
             context,
             "Find lion (scientific name: Panthera leo)",
-            "find_species_records",
+            "find_taxon_records",
             None,
         )
 
@@ -101,7 +101,7 @@ async def test_count_species_records(agent, context, messages):
     with patch('src.gbif.fetch.execute_request') as mock_execute:
         mock_execute.return_value = mock_response
         # TODO: I don't think GBIF's API can do this in one call
-        await agent.run(context, "Count species by kingdom", "count_species_records", None)
+        await agent.run(context, "Count species by kingdom", "count_taxon_records", None)
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
     assert artifacts, "Expected at least one ArtifactResponse"
@@ -113,7 +113,7 @@ async def test_find_species_taxonomic_information(agent, context, messages):
     mock_response = {
         "status_code": 200,
         "count": 1,
-        "results": [{"key": 123456789, "scientificName": "Panthera leo"}],
+        "results": [{"key": "4CGXP", "scientificName": "Panthera leo"}],
         "facets": []
     }
 

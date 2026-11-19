@@ -13,7 +13,7 @@ from utils import _preprocess_user_request, serialize_organisms
 description = """
 **Species counts (taxonomic registry only — no location/time filters).**
 
-- **Route to this when**: The user wants counts of taxonomic entities (e.g., species/genera/families) based on taxonomy or status, independent of where/when they were observed. Examples include “how many species in Plantae?”, “number of endangered bird species worldwide,” “breakdown by rank.”
+- **Route to this when**: The user wants counts of taxon records based on classification or status, independent of where/when they were observed. Examples include “how many species in Plantae?”, “number of endangered bird species worldwide,” “breakdown by rank.”
 - **Do NOT use when**: The prompt includes any location, date/time, geospatial constraint, or mentions occurrences/records/observations/collected/specimens. Those must go to occurrence-based counting.
 
 **Use Case:** Count taxon name usages (taxonomic entities), not observations. Returns aggregated counts and facets.
@@ -35,15 +35,15 @@ Limitations: Cannot filter by location, time, or record-level fields; does not g
 """
 
 entrypoint = AgentEntrypoint(
-    id="count_species_records",
+    id="count_taxon_records",
     description=description
 )
 
 
-@with_logging("count_species_records")
+@with_logging("count_taxon_records")
 async def run(context: ResponseContext, request: str):
     """
-    Executes the species counting entrypoint. Counts species name usage records using the provided
+    Executes the taxon record counting entrypoint. Counts taxonomic name usage records using the provided
     parameters and creates an artifact with the faceted statistical results.
     """
     async with context.begin_process("Requesting GBIF Species statistics") as process:
@@ -53,10 +53,10 @@ async def run(context: ResponseContext, request: str):
         expansion_response = await _preprocess_user_request(request)
         if expansion_response.locations:
             await process.log(
-                "Warning: Request includes locations. This entrypoint cannot search for species records with specific locations."
+                "Warning: Request includes locations. This entrypoint cannot search for taxon records with specific locations."
             )
             await context.reply(
-                "Warning: Request includes locations. This entrypoint cannot search for species records with specific locations. Please use occurrence search entrypoint instead."
+                "Warning: Request includes locations. This entrypoint cannot search for taxon records with specific locations. Please use occurrence search entrypoint instead."
             )
             return
 
@@ -150,14 +150,14 @@ async def run(context: ResponseContext, request: str):
                 },
             )
             await context.reply(
-                f"I encountered an error while trying to count species records: {str(e)}",
+                f"I encountered an error while trying to count taxon records: {str(e)}",
             )
 
 
 def _generate_response_summary(page_info: dict, portal_url: str) -> str:
     if page_info.get("count") > 0:
-        summary = f"I have found {page_info.get('count')} species records matching your criteria. "
+        summary = f"I have found {page_info.get('count')} taxon records matching your criteria. "
     else:
-        summary = "I have not found any species records matching your criteria. "
+        summary = "I have not found any taxon records matching your criteria. "
     summary += f"The results can also be viewed in the GBIF portal at {portal_url}."
     return summary

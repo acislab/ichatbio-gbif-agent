@@ -144,9 +144,9 @@ async def _generate_artifact_description(details: str) -> str:
             description="A concise characterization of the retrieved record statistics.",
             examples=[
                 "Occurrence records for species Rattus rattus across multiple countries.",
-                "Species-level record counts for observations created in 2025.",
+                "Family-level record counts for observations created in 2025.",
                 "Occurrence data for Psittacidae in Alaska, United States.",
-                "Per-species record counts for records created in 2025",
+                "Per-species record counts for occurrence records collected in 2025",
             ],
             default=None,
         )
@@ -159,7 +159,7 @@ async def _generate_artifact_description(details: str) -> str:
                     "You are a helpful assistant that summarizes GBIF API search parameters "
                     "into a short, meaningful English description. "
                     "Your output must be a single complete sentence summarizing the type of data retrieved. "
-                    "Identify what kind of records (e.g., occurrence records, species counts), "
+                    "Identify what kind of records (e.g., occurrence records, taxon counts), "
                     "and mention geographic or taxonomic filters when present. "
                     "Avoid repeating raw parameter names or producing fragments like 'per-country' "
                     "unless multiple countries are explicitly listed."

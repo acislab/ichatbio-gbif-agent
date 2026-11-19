@@ -29,7 +29,7 @@ from utils import serialize_entities
 description = """
 **Occurrence-based counts and distincts (supports location/time/record filters).**
 
-- **Route to this when**: The user asks for counts or breakdowns that depend on where/when things were observed or any record-level constraints. This includes “unique/distinct species in [place],” “counts by country/year,” “top taxa by records,” or any occurrence-level filter (e.g., basisOfRecord, dataset, collector, coordinates).
+- **Route to this when**: The user asks for counts or breakdowns that depend on where/when things were observed or any record-level constraints. This includes “unique/distinct taxa in [place],” “counts by country/year,” “top taxa by records,” or any occurrence-level filter (e.g., basisOfRecord, dataset, collector, coordinates).
 - **Do NOT use when**: The user wants purely taxonomic counts that are independent of observations. Those go to species counts.
 
 **Use Case:** Aggregate GBIF occurrence records with facets; can compute distinct species (via `scientificName`/`TAXON_KEY` facets) under spatial/temporal/record filters.

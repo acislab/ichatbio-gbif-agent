@@ -38,7 +38,7 @@ async def test_routes_find_occurrence_by_id_entrypoint(mock_run, agent, context)
 @patch("entrypoints.species.search.run")
 async def test_routes_find_species_records_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
-    await agent.run(context, "test", "find_species_records", None)
+    await agent.run(context, "test", "find_taxon_records", None)
     mock_run.assert_called_once_with(context, "test")
 
 
@@ -46,7 +46,7 @@ async def test_routes_find_species_records_entrypoint(mock_run, agent, context):
 @patch("entrypoints.species.count.run")
 async def test_routes_count_species_records_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
-    await agent.run(context, "test", "count_species_records", None)
+    await agent.run(context, "test", "count_taxon_records", None)
     mock_run.assert_called_once_with(context, "test")
 
 

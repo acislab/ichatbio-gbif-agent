@@ -92,10 +92,10 @@ class GBIFSpeciesSearchParams(
     models.common.PaginationParams,
 ):
     """
-    Parameters for GBIF species search.
+    Parameters for GBIF taxon search.
 
-    Full text search over name usages covering scientific and vernacular names,
-    species descriptions, distribution and classification data.
+    Full text search over name usages covering scientific and vernacular names, taxon descriptions, distribution and
+    classification data.
 
     This model composes all search parameters from smaller, organized filter models:
     - SpeciesSearchFilters: Core search and query filters
@@ -111,7 +111,7 @@ class GBIFSpeciesSearchParams(
 
 
 class GBIFSpeciesFacetsParams(GBIFSpeciesSearchParams, models.common.FacetParams):
-    """Parameters for GBIF species faceting."""
+    """Parameters for GBIF taxon search faceting."""
 
     # Override limit default for faceting (0 for facets only)
     limit: int | None = Field(

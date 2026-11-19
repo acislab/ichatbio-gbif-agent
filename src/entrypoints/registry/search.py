@@ -1,10 +1,10 @@
 import uuid
 
-from ichatbio.agent_response import ResponseContext
-from ichatbio.types import AgentEntrypoint
 from gbif.api import GbifApi
 from gbif.fetch import execute_request
 from gbif.parser import parse
+from ichatbio.agent_response import ResponseContext
+from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.validators import DatasetSearchParamsValidator
 
@@ -13,7 +13,7 @@ description = """
 
 **Triggers On:** User requests to "find datasets," "search for collections," or "list data sources about" a topic. Also handles requests for summaries of datasets (e.g., "count of datasets by type").
 
-**Crucial Distinction:** Use this tool only when the user is asking about the data containers (datasets) themselves, not the individual data points inside them (occurrences or species records).
+**Crucial Distinction:** Use this tool only when the user is asking about the data containers (datasets) themselves, not the individual data points inside them (occurrences or taxon records).
 
 **Key Inputs:** A query string (q) and/or a wide variety of filters like type, keyword, publishingCountry, license, and taxonKey. It also supports faceting via the facet parameter.
 """

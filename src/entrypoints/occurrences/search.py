@@ -2,8 +2,6 @@ import json
 import uuid
 from dataclasses import dataclass
 
-from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
-from ichatbio.types import AgentEntrypoint
 from bionomia import normalize_name
 from gadm.gadm import (
     map_locations_to_gadm,
@@ -17,6 +15,8 @@ from gbif.resolve_parameters import (
     resolve_pending_search_parameters,
 )
 from grscicoll import normalize_institution
+from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
+from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.entrypoints import GBIFOccurrenceSearchParams
 from models.validators import OccurrenceSearchParamsValidator
@@ -34,7 +34,7 @@ from utils import (
 description = """
 **Use Case:** Use this entrypoint to search for and retrieve a list of individual occurrence records that match specific filters. This is the primary tool for fetching raw data.
 
-**Triggers On:** User requests that may ask to "find," "list," or "show records of" something. It's for when the user wants to see the actual data entries, not a summary of them. It may also ask for records of a specific species, location, or time period.
+**Triggers On:** User requests that may ask to "find," "list," or "show records of" something. It's for when the user wants to see the actual data entries, not a summary of them. It may also ask for records of a specific taxon, location, or time period.
 
 **Key Inputs:** Requires specific search criteria like scientificName, taxonKey, country, year, or geographic coordinates (latitude, longitude).
 
