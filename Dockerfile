@@ -26,8 +26,7 @@ ENV UV_PYTHON=/usr/local/bin/python \
 COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-install-project
-COPY backend backend
-COPY templates templates
+COPY src src
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
