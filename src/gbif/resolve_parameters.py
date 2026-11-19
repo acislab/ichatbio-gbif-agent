@@ -75,7 +75,7 @@ resolvable_fields = {
 
 async def resolve_field_from_request(
         api: GbifApi, process: IChatBioAgentProcess, field_name: str, user_request: str
-) -> list[int] | None:
+) -> list[str] | None:
     if field_name not in resolvable_fields:
         return None
     rank = resolvable_fields[field_name]
@@ -130,7 +130,7 @@ async def extract_taxonomic_names(
 
 async def resolve_name_to_key(
         api: GbifApi, process: IChatBioAgentProcess, name: str, expected_rank: str
-) -> int | None:
+) -> str | None:
     try:
         params = GBIFSpeciesNameMatchParams(scientificName=name)
         url = api.build_species_match_url(params)
@@ -166,7 +166,7 @@ async def resolve_pending_search_parameters(
         user_request: str,
         api: GbifApi,
         process: IChatBioAgentProcess,
-) -> tuple[dict[str, list[int]], list[str]]:
+) -> tuple[dict[str, list[str]], list[str]]:
     """
     Attempt to resolve clarification fields automatically.
 

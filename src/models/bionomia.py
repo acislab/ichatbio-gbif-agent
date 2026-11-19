@@ -13,7 +13,7 @@ class BionomiaNameRecord(BaseModel):
         extra="allow"
     )  # Allow extra fields like match_reason, match_id
 
-    id: int | None = Field(None, description="Bionomia user ID")
+    id: str | None = Field(None, description="Bionomia user ID")
     score: float | None = Field(None, description="API similarity score")
     orcid: str | None = Field(None, description="ORCID identifier")
     wikidata: str | None = Field(None, description="Wikidata identifier (e.g., 'Q113489547')")

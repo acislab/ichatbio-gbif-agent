@@ -59,10 +59,10 @@ class TaxonomicFilters(ProductionBaseModel):
         description="Filters by taxonomic rank as defined in the GBIF rank enumeration. Helps narrow results to specific taxonomic levels.",
     )
 
-    higherTaxonKey: int | None = Field(
+    higherTaxonKey: str | None = Field(
         None,
         description="Filters by any of the higher Linnean rank keys within the respective checklist. Note this searches within the specific checklist, not across all NUB keys. Useful for finding all taxa under a specific higher taxon.",
-        examples=[212, 44, 1448, 2405],  # Example keys for different higher taxa
+        examples=["N", "3PQ6", "8VRHY"]
     )
 
     status: TaxonomicStatusEnum | None = Field(

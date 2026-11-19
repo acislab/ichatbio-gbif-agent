@@ -384,7 +384,7 @@ class GBIFSpeciesNameMatchParams(ProductionBaseModel):
         examples=["8fa58e08-08de-4ac1-b69c-1235340b7001"]
     )
 
-    scientificNameID: int | None = Field(
+    scientificNameID: str | None = Field(
         None,
         description="The scientificNameID to match. Matches to a scientificNameID will take precedence over scientificName values supplied. A comparison of the matched scientific and scientificNameID is performed to check for inconsistencies. See Darwin core term http://rs.tdwg.org/dwc/terms/scientificNameID for more details",
         examples=["urn:lsid:ipni.org:names:37829-1:1.3"]
