@@ -1,24 +1,13 @@
-FROM ubuntu:24.04
+FROM python:3.14-slim-trixie
 
-RUN apt-get update -y \
-      && apt-get install -y \
-      python3-pip \
-      python3.12-venv \
-      pipx
+# Install system dependencies
+COPY --from=ghcr.io/astral-sh/uv:0.13.9 /uv /uvx /bin/
 
-ENV PATH="/root/.local/bin:$PATH"
-RUN pipx install uv
-RUN cp /root/.local/bin/uv /usr/local/bin/uv
-
-RUN adduser --disabled-password nonroot
-RUN mkdir /home/app && chown -R nonroot:nonroot /home/app
-RUN mkdir -p /var/log/flask-app \
-      && touch /var/log/flask-app/flask-app.err.log \
-      && touch /var/log/flask-app/flask-app.out.log \
-      && chown -R nonroot:nonroot /var/log/flask-app
-RUN mkdir -p /home/app/logs && chown -R nonroot:nonroot /home/app/logs
-
-WORKDIR /home/app
+# Set up a nonroot user for tightened security
+RUN adduser --disabled-password nonroot && \
+    mkdir -p /app/tmp && \
+    chown -R nonroot:nonroot /app
+WORKDIR /app
 
 # Download GADM database
 RUN apt-get update && apt-get install -y wget unzip \
@@ -31,13 +20,19 @@ RUN apt-get update && apt-get install -y wget unzip \
 
 COPY --chown=nonroot:nonroot . .
 
+# Set up Python environment
+ENV UV_PYTHON=/usr/local/bin/python \
+    UV_PYTHON_DOWNLOADS=never
+COPY pyproject.toml uv.lock ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev --no-install-project
+COPY backend backend
+COPY templates templates
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev
+
+# Run
 USER nonroot
-
-ENV VIRTUAL_ENV=/home/app/venv
-ENV PATH="$VIRTUAL_ENV/bin:/usr/local/bin:$PATH"
-
-RUN python3 -m venv $VIRTUAL_ENV
-RUN uv pip install --no-cache --python $VIRTUAL_ENV/bin/python -e .
+ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 9999
-
-CMD ["python3", "-m", "src"]
+CMD ["uvicorn", "src.agent:create_app", "--factory", "--host", "0.0.0.0", "--port", "9999"]

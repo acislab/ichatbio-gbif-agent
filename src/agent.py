@@ -1,12 +1,15 @@
 from typing import Any
 
+import dotenv
+from app_config import reload, set_llm_credentials
 from ichatbio.agent import IChatBioAgent
 from ichatbio.agent_response import ResponseContext
+from ichatbio.server import build_agent_app
 from ichatbio.types import AgentCard
 from pydantic import BaseModel
 from src.entrypoints import occurrences, species, registry
-from src.instructor_client import set_llm_credentials
 from src.log import logger
+from starlette.applications import Starlette
 from typing_extensions import override
 
 
@@ -67,3 +70,11 @@ class GBIFAgent(IChatBioAgent):
                 f"AGENT_ERROR | Entrypoint={entrypoint} | Error={type(e).__name__}: {str(e)}"
             )
             raise
+
+
+def create_app() -> Starlette:
+    dotenv.load_dotenv()
+    reload()
+    agent = GBIFAgent()
+    app = build_agent_app(agent)
+    return app

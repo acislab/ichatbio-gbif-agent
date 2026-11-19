@@ -149,10 +149,6 @@ async def parse(
         parameters_model: Type[T],
         preprocess_information: UserRequestExpansion | None = None,
 ) -> BaseModel:
-    response_model = create_response_model(parameters_model)
-
-    client = await get_client()
-
     messages = [
         {
             "role": "system",
@@ -195,6 +191,8 @@ async def parse(
     instructor_validation_context = {"user_request": request}
 
     try:
+        client = await get_client()
+        response_model = create_response_model(parameters_model)
         response = await client.chat.completions.create(
             messages=messages,
             response_model=response_model,

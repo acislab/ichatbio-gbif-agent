@@ -174,7 +174,6 @@ async def _find_best_taxon_match(
         taxon_matches: list[TaxonMatch], user_query: str
 ) -> TaxonMatch:
     client = await get_client()
-
     response = await client.chat.completions.create(
         messages=[
             {

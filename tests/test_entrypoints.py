@@ -17,7 +17,7 @@ async def test_find_occurrence_records(agent, context, messages):
         mock_execute.return_value = mock_response
         await agent.run(context, "Find Puma concolor", "find_occurrence_records", None)
 
-    artifacts = (m for m in messages if isinstance(m, ArtifactResponse))
+    artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]
 
     # Make sure a species match happened before the occurrence search
     it = iter(artifacts)

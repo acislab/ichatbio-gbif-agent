@@ -207,7 +207,6 @@ async def _preprocess_user_request(user_request: str):
     ]
 
     client = await get_client()
-
     response = await client.chat.completions.create(
         messages=messages,
         response_model=UserRequestExpansion,
@@ -297,7 +296,6 @@ async def find_best_name_match(
     ]
 
     client = await get_client()
-
     selection_response = await client.chat.completions.create(
         messages=messages,
         response_model=NameMatchSelectionResponse,

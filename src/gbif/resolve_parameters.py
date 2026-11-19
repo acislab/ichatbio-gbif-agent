@@ -109,7 +109,6 @@ async def extract_taxonomic_names(
 ) -> TaxonomicExtraction:
     await process.log("Diving deeper...")
     try:
-        openai_client = await get_client()
         messages = [
             {"role": "system", "content": taxonomic_extraction_prompt},
             {
@@ -117,10 +116,8 @@ async def extract_taxonomic_names(
                 "content": f"Identified taxonomy: {user_request}",
             },
         ]
-        response = await openai_client.chat.completions.create(
-            messages=messages,
-            response_model=TaxonomicExtraction,
-        )
+        client = await get_client()
+        response = await client.chat.completions.create(messages=messages, response_model=TaxonomicExtraction)
         await process.log(f"Taxonomic names extracted", data=response.model_dump())
         return response
     except Exception as e:
