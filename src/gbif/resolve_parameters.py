@@ -1,4 +1,3 @@
-from src.gbif.fetch import execute_multiple_requests
 from src.instructor_client import get_client
 from src.models.entrypoints import GBIFSpeciesNameMatchParams
 from src.utils import IdentifiedOrganism
@@ -63,7 +62,6 @@ Examples:
 - "order Carnivora" → orders: ["Carnivora"]
 - "butterflies from family Nymphalidae" → families: ["Nymphalidae"]"""
 
-
 resolvable_fields = {
     "familyKey": "family",
     "genusKey": "genus",
@@ -77,7 +75,7 @@ resolvable_fields = {
 
 
 async def resolve_field_from_request(
-    api: GbifApi, process: IChatBioAgentProcess, field_name: str, user_request: str
+        api: GbifApi, process: IChatBioAgentProcess, field_name: str, user_request: str
 ) -> Optional[List[int]]:
     if field_name not in resolvable_fields:
         return None
@@ -108,7 +106,7 @@ async def resolve_field_from_request(
 
 
 async def extract_taxonomic_names(
-    process: IChatBioAgentProcess, user_request: str
+        process: IChatBioAgentProcess, user_request: str
 ) -> TaxonomicExtraction:
     await process.log("Diving deeper...")
     try:
@@ -134,7 +132,7 @@ async def extract_taxonomic_names(
 
 
 async def resolve_name_to_key(
-    api: GbifApi, process: IChatBioAgentProcess, name: str, expected_rank: str
+        api: GbifApi, process: IChatBioAgentProcess, name: str, expected_rank: str
 ) -> Optional[int]:
     try:
         params = GBIFSpeciesNameMatchParams(scientificName=name)
@@ -167,10 +165,10 @@ async def resolve_name_to_key(
 
 
 async def resolve_pending_search_parameters(
-    unresolved_params: List[str],
-    user_request: str,
-    api: GbifApi,
-    process: IChatBioAgentProcess,
+        unresolved_params: List[str],
+        user_request: str,
+        api: GbifApi,
+        process: IChatBioAgentProcess,
 ) -> Tuple[Dict[str, List[int]], List[str]]:
     """
     Attempt to resolve clarification fields automatically.
@@ -201,7 +199,7 @@ async def resolve_pending_search_parameters(
 
 
 async def resolve_names_to_taxonkeys(
-    api: GbifApi, organisms: List[IdentifiedOrganism], process: IChatBioAgentProcess
+        api: GbifApi, organisms: List[IdentifiedOrganism], process: IChatBioAgentProcess
 ) -> list:
     """
     Resolve scientific names to GBIF taxon keys using the species match API.
@@ -257,7 +255,7 @@ async def resolve_names_to_taxonkeys(
 
             # If no match found with rank-specific parameter, try with scientificName
             if not result or not (
-                result.get("usage") and result.get("usage", {}).get("key")
+                    result.get("usage") and result.get("usage", {}).get("key")
             ):
                 params = GBIFSpeciesNameMatchParams(scientificName=name)
                 url = api.build_species_match_url(params)
@@ -269,7 +267,7 @@ async def resolve_names_to_taxonkeys(
 
             # If still no match, try with verbose=True to get alternatives
             if not result or not (
-                result.get("usage") and result.get("usage", {}).get("key")
+                    result.get("usage") and result.get("usage", {}).get("key")
             ):
                 params = GBIFSpeciesNameMatchParams(scientificName=name, verbose=True)
                 url = api.build_species_match_url(params)
@@ -357,64 +355,3 @@ async def resolve_names_to_taxonkeys(
 
     await process.log(f"Resolved {len(taxon_keys)} out of {len(organisms)} names.")
     return taxon_keys
-
-
-async def resolve_keys_to_names(
-    api: GbifApi,
-    process: IChatBioAgentProcess,
-    keys: list,
-    type: str,
-) -> Dict[int | str, str]:
-    """
-    Resolve GBIF usage keys to scientific names using the species API.
-    """
-    if not keys:
-        return {}
-
-    unique_keys: list[str] = sorted({k for k in keys if k is not None})
-    urls: Dict[str, str] = {
-        str(usage_key): api.build_species_key_search_url(usage_key)
-        for usage_key in unique_keys
-    }
-    await process.log(
-        "Resolving GBIF keys to scientific names",
-        data={"keys": unique_keys, "type": type},
-    )
-    results = await execute_multiple_requests(urls)
-    keys_to_name: Dict[str, str] = {}
-    for key_str, payload in results.items():
-        try:
-            if isinstance(payload, dict) and "error" not in payload:
-                scientific_name = payload.get("scientificName")
-                if not scientific_name:
-                    scientific_name = payload.get("canonicalName")
-                if scientific_name:
-                    keys_to_name[key_str] = scientific_name
-                else:
-                    await process.log(
-                        f"No scientific name found for key {key_str}",
-                        data={"payload_keys": list(payload.keys())},
-                    )
-            else:
-                await process.log(
-                    f"Failed to fetch details for key {key_str}",
-                    data={
-                        "error": (
-                            payload.get("error")
-                            if isinstance(payload, dict)
-                            else str(payload)
-                        )
-                    },
-                )
-        except Exception as e:
-            await process.log(
-                f"Error processing species details for key {key_str}",
-                data={"error": str(e)},
-            )
-
-    await process.log(
-        "Resolved GBIF keys to names",
-        data={"resolved": len(keys_to_name), "requested": len(unique_keys)},
-    )
-
-    return keys_to_name

@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
 from ichatbio.agent_response import ArtifactResponse
 
 
@@ -44,7 +45,8 @@ async def test_count_occurrence_records(agent, context, messages):
     # Make sure a species match happened before the occurrence search
     it = iter(artifacts)
     assert any((a.uris[0].startswith("https://api.gbif.org/v2/species/match") for a in it))
-    assert any((a.metadata.get("derived_from", "").startswith("https://api.gbif.org/v1/occurrence/search?facet") for a in it))
+    assert any((a.metadata.get("derived_from", "").startswith("https://api.gbif.org/v1/occurrence/search?facet")
+                for a in it))
 
 
 @pytest.mark.asyncio
@@ -98,6 +100,7 @@ async def test_count_species_records(agent, context, messages):
 
     with patch('src.gbif.fetch.execute_request') as mock_execute:
         mock_execute.return_value = mock_response
+        # TODO: I don't think GBIF's API can do this in one call
         await agent.run(context, "Count species by kingdom", "count_species_records", None)
 
     artifacts = [m for m in messages if isinstance(m, ArtifactResponse)]

@@ -1,5 +1,6 @@
-from pydantic import BaseModel, model_validator, ValidationInfo, field_validator
 from typing import ClassVar
+
+from pydantic import BaseModel, model_validator, ValidationInfo, field_validator
 from src.models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceByIdParams,
@@ -10,6 +11,7 @@ from src.models.entrypoints import (
     GBIFSpeciesFacetsParams,
 )
 from src.models.registry import GBIFGrSciCollInstitutionSearchParams
+
 
 class RequestValidationMixin(BaseModel):
     """
@@ -79,9 +81,7 @@ class FacetValidationMixin:
         allowed = cls.allowed_facet_fields()
         invalid = [f for f in v if f not in allowed]
 
-        invalid_special = [
-            f for f in v if f in {"q", "scientificName", "geoDistance", "geometry"}
-        ]
+        invalid_special = [f for f in v if f in {"q", "scientificName", "geoDistance", "geometry"}]
         if invalid_special:
             raise ValueError(
                 f"Fields are not valid facets for GBIF API: {invalid_special}. You should remove these field(s) from facet parameter values and use different fields if available. Choose from the valid facets fields: {sorted(allowed)}"

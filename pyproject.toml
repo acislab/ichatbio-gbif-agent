@@ -1,5 +1,5 @@
 [project]
-name = "gbif"
+name = "ichatbio-gbif-agent"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -25,5 +25,5 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --tb=short --import-mode=importlib -n auto"
+addopts = "-v --tb=short --import-mode=importlib"
 asyncio_default_fixture_loop_scope = "function"

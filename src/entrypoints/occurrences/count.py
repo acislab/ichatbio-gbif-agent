@@ -1,16 +1,20 @@
-import uuid
 import json
-
+import uuid
 from dataclasses import dataclass
-from typing import Optional, List
+from typing import Optional, List, Iterable
+
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
-
+from src.bionomia import normalize_name
+from src.gadm.gadm import map_locations_to_gadm, serialize_locations
 from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request
+from src.gbif.fetch import execute_request, execute_multiple_requests
+from src.gbif.parser import parse
+from src.gbif.resolve_parameters import resolve_names_to_taxonkeys, resolve_pending_search_parameters
+from src.grscicoll import normalize_institution
+from src.log import with_logging, logger
 from src.models.entrypoints import GBIFOccurrenceFacetsParams
 from src.models.validators import OccurrenceFacetsParamsValidator
-from src.log import with_logging, logger
 from src.utils import (
     _preprocess_user_request,
     _generate_artifact_description,
@@ -20,17 +24,7 @@ from src.utils import (
     IdentifiedOrganism,
     NamedEntityType,
 )
-from src.gbif.parser import parse
-from src.gbif.resolve_parameters import (
-    resolve_names_to_taxonkeys,
-    resolve_pending_search_parameters,
-    resolve_keys_to_names,
-)
-from src.gadm.gadm import map_locations_to_gadm, serialize_locations
-from src.bionomia import normalize_name
-from src.grscicoll import normalize_institution
 from src.utils import serialize_entities
-
 
 description = """
 **Occurrence-based counts and distincts (supports location/time/record filters).**
@@ -57,7 +51,6 @@ description = """
 Limitations: Returns aggregated summaries over occurrence records; not the same as the taxonomic backbone counts. For full record details, use the record/search endpoints.
 """
 
-
 entrypoint = AgentEntrypoint(
     id="count_occurrence_records",
     description=description
@@ -68,7 +61,7 @@ entrypoint = AgentEntrypoint(
 class ParameterResolutionResult:
     search_params: Optional[GBIFOccurrenceFacetsParams]
     clarification_needed: bool
-    clarification_message: str = None
+    clarification_message: str | None = None
 
 
 @with_logging("count_occurrence_records")
@@ -100,7 +93,7 @@ async def run(context: ResponseContext, request: str):
                         if result.get("fullname_reverse"):
                             alternate_names.append(result["fullname_reverse"])
                         if result.get("label") and result["label"] != result.get(
-                            "fullname"
+                                "fullname"
                         ):
                             alternate_names.append(result["label"])
                         if result.get("other_names"):
@@ -109,9 +102,9 @@ async def run(context: ResponseContext, request: str):
                     else:
                         continue
                 elif entity.type in (
-                    NamedEntityType.INSTITUTION,
-                    NamedEntityType.MUSEUM,
-                    NamedEntityType.COLLECTION,
+                        NamedEntityType.INSTITUTION,
+                        NamedEntityType.MUSEUM,
+                        NamedEntityType.COLLECTION,
                 ):
                     institution = await normalize_institution(process, entity.value)
                     if institution:
@@ -207,7 +200,7 @@ async def run(context: ResponseContext, request: str):
             }
             pagination_message = "API pagination information of the response"
             if page_info.get("count") > (
-                page_info.get("facetLimit") + page_info.get("facetOffset")
+                    page_info.get("facetLimit") + page_info.get("facetOffset")
             ):
                 pagination_message = "Warning: The response is truncated due to pagination and only contain subset of the data available on GBIF."
             await process.log(pagination_message, data=page_info)
@@ -257,11 +250,11 @@ def _generate_response_summary(page_info: dict, portal_url: str) -> str:
 
 
 async def _get_parameters(
-    response: GBIFOccurrenceFacetsParams,
-    request: str,
-    organisms: List[IdentifiedOrganism],
-    process: IChatBioAgentProcess = None,
-    api: GbifApi = None,
+        response: GBIFOccurrenceFacetsParams,
+        request: str,
+        organisms: List[IdentifiedOrganism],
+        process: IChatBioAgentProcess = None,
+        api: GbifApi = None,
 ) -> ParameterResolutionResult:
     """
     Executes the occurrence facets entrypoint. Counts occurrence records using the provided
@@ -329,12 +322,9 @@ async def _get_parameters(
     )
 
 
-async def _enrich_facets_with_names(
-    api: GbifApi, process: IChatBioAgentProcess, facets: list
-) -> list:
-    """
-    Enrich facet results by adding scientific names for taxonomic key facets.
-    """
+async def _enrich_facets_with_names(api: GbifApi, process: IChatBioAgentProcess, facets: list):
+    """Enrich facet results in-place by mapping taxon keys to scientific names."""
+
     taxonomic_facet_fields = {
         "SPECIES_KEY",
         "GENUS_KEY",
@@ -346,30 +336,32 @@ async def _enrich_facets_with_names(
         "TAXON_KEY",
     }
 
-    enriched_facets = []
-
     for facet in facets:
-        field = facet.get("field", "")
-        if field in taxonomic_facet_fields:
+        if facet.get("field", "") in taxonomic_facet_fields:
             counts = facet.get("counts", [])
-            keys = [name for count in counts if (name := count.get("name"))]
+            keys = {name for count in counts if (name := count.get("name"))}
 
             if keys:
-                key_to_name = await resolve_keys_to_names(api, process, keys, field)
-                enriched_counts = []
+                await process.log("Resolving taxon keys to scientific names", data={"keys": list(keys)})
+                key_to_name = await resolve_keys_to_names(api, keys)
+                await process.log(f"Resolved scientific names for {len(key_to_name)} of {len(keys)} taxon keys")
+
                 for count in counts:
                     key = count.get("name")
                     if key in key_to_name:
-                        enriched_count = count.copy()
-                        enriched_count["scientificName"] = key_to_name[key]
-                        enriched_counts.append(enriched_count)
-                    else:
-                        enriched_counts.append(count)
-                enriched_facet = facet.copy()
-                enriched_facet["counts"] = enriched_counts
-                enriched_facets.append(enriched_facet)
-            else:
-                enriched_facets.append(facet)
-        else:
-            enriched_facets.append(facet)
-    return enriched_facets
+                        count["scientificName"] = key_to_name[key]
+
+
+async def resolve_keys_to_names(api: GbifApi, keys: Iterable[str]) -> dict[str, str]:
+    """Resolve GBIF usage keys to scientific names using /v2/taxon."""
+    if not keys:
+        return {}
+
+    urls = {key: api.build_species_key_search_url(key) for key in keys}
+    results = await execute_multiple_requests(urls)
+
+    return {
+        key: info["scientificName"]
+        for key, info in results.items()
+        if isinstance(info, dict) and "scientificName" in info
+    }

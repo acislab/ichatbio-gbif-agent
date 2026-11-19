@@ -1,7 +1,7 @@
-from pydantic import Field
 from typing import Optional
 
-from .base import ProductionBaseModel
+from models.base import ProductionBaseModel
+from pydantic import Field
 from src.enums.species import (
     NameTypeEnum,
     TaxonomicRankEnum,
@@ -19,7 +19,7 @@ class SearchFilters(ProductionBaseModel):
     """Full-text search filters for species (q parameter for broad search, qField to narrow to specific fields)."""
 
     q: Optional[str] = Field(
-        default=None,
+        None,
         description="Simple full text search parameter covering scientific and vernacular names, species descriptions, distribution and entire classification. The value can be a simple word or phrase. Wildcards are not supported. Results are ordered by relevance. Only use this parameter if the user's request is vague and none of the other specific parameters are available.",
         examples=[
             "Puma concolor",
@@ -61,7 +61,8 @@ class TaxonomicFilters(ProductionBaseModel):
     rank: Optional[TaxonomicRankEnum] = Field(
         None,
         description="Filters by taxonomic rank as defined in the GBIF rank enumeration. Helps narrow results to specific taxonomic levels.",
-        examples=[TaxonomicRankEnum.SPECIES, TaxonomicRankEnum.GENUS, TaxonomicRankEnum.FAMILY, TaxonomicRankEnum.ORDER],
+        examples=[TaxonomicRankEnum.SPECIES, TaxonomicRankEnum.GENUS, TaxonomicRankEnum.FAMILY,
+                  TaxonomicRankEnum.ORDER],
     )
 
     higherTaxonKey: Optional[int] = Field(
@@ -83,7 +84,8 @@ class NameFilters(ProductionBaseModel):
     nameType: Optional[NameTypeEnum] = Field(
         None,
         description="Filters by the type of name string as classified by GBIF's name parser. Helps distinguish between different categories of taxonomic names.",
-        examples=[NameTypeEnum.SCIENTIFIC, NameTypeEnum.VIRUS, NameTypeEnum.HYBRID, NameTypeEnum.CULTIVAR, NameTypeEnum.INFORMAL],
+        examples=[NameTypeEnum.SCIENTIFIC, NameTypeEnum.VIRUS, NameTypeEnum.HYBRID, NameTypeEnum.CULTIVAR,
+                  NameTypeEnum.INFORMAL],
     )
 
     nomenclaturalStatus: Optional[NomenclaturalStatusEnum] = Field(

@@ -97,7 +97,7 @@ class GbifApi:
         return self._make_api_url("/v1/species/search", api_params)
 
     def build_species_key_search_url(self, col_xr_key: str) -> str:
-        return self._make_api_url(f"/v2/species/{COL_CHECKLIST_KEY}/{col_xr_key}")
+        return self._make_api_url(f"/v2/taxon/{COL_CHECKLIST_KEY}/{col_xr_key}")
 
     def build_species_taxonomic_urls(
             self, params: GBIFSpeciesTaxonomicParams

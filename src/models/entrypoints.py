@@ -1,23 +1,11 @@
 from typing import List, Optional
+
 from pydantic import Field
-
-from src.models.base import ProductionBaseModel
 from src import models
-
-from src.enums.common import (
-    ContinentEnum,
-    LicenseEnum,
-    CountryEnum,
-)
-from src.enums.species import (
-    TaxonomicRankEnum,
-    QueryFieldEnum,
-)
-from src.enums.registry import (
-    DatasetTypeEnum,
-    DatasetSubtypeEnum,
-    EndpointTypeEnum,
-)
+from src.enums.common import ContinentEnum, LicenseEnum, CountryEnum
+from src.enums.registry import DatasetTypeEnum, DatasetSubtypeEnum, EndpointTypeEnum
+from src.enums.species import TaxonomicRankEnum, QueryFieldEnum
+from src.models.base import ProductionBaseModel
 
 
 class GBIFOccurrenceBaseParams(
@@ -125,12 +113,7 @@ class GBIFSpeciesSearchParams(
 
 
 class GBIFSpeciesFacetsParams(GBIFSpeciesSearchParams, models.common.FacetParams):
-    """
-    Parameters for GBIF species faceting.
-
-    Extends GBIFSpeciesSearchParams with FacetParams for faceting options and
-    statistical analysis.
-    """
+    """Parameters for GBIF species faceting."""
 
     # Override limit default for faceting (0 for facets only)
     limit: Optional[int] = Field(
