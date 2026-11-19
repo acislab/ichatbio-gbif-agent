@@ -8,7 +8,6 @@ from uuid import UUID
 
 import httpx
 from httpx import AsyncClient
-from pydantic import BaseModel
 from models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceFacetsParams,
@@ -19,6 +18,7 @@ from models.entrypoints import (
     GBIFDatasetSearchParams,
 )
 from models.registry import GBIFGrSciCollInstitutionSearchParams
+from pydantic import BaseModel
 
 COL_CHECKLIST_KEY = "7ddf754f-d193-4cc9-b351-99906754a03b"
 
@@ -41,7 +41,7 @@ class GbifApi:
 
         return response
 
-    def _convert_to_api_params(self, params: BaseModel, with_checklist=False) -> dict[str, Any]:
+    def _convert_to_api_params(self, params: BaseModel, add_checklist: str | None = None) -> dict[str, Any]:
         api_params = {}
 
         for field_name, value in params.model_dump(by_alias=True).items():
@@ -70,8 +70,8 @@ class GbifApi:
                 api_params[field_name] = value
 
         # Use "CoL XR" taxon IDs instead of GBIF backbone IDs. This is only needed for the API, not the search portal
-        if with_checklist:
-            api_params["checklistKey"] = COL_CHECKLIST_KEY
+        if add_checklist and add_checklist not in api_params:
+            api_params[add_checklist] = COL_CHECKLIST_KEY
 
         return api_params
 
@@ -80,20 +80,20 @@ class GbifApi:
         return f"{self.base_url}{endpoint}?{query_string}"
 
     def build_occurrence_search_url(self, params: GBIFOccurrenceSearchParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params, add_checklist="checklistKey")
         return self._make_api_url("/v1/occurrence/search", api_params)
 
     def build_occurrence_facets_url(self, params: GBIFOccurrenceFacetsParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params, add_checklist="checklistKey")
         api_params["limit"] = 0
         return self._make_api_url("/v1/occurrence/search", api_params)
 
     def build_species_search_url(self, params: GBIFSpeciesSearchParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params, add_checklist="datasetKey")
         return self._make_api_url("/v1/species/search", api_params)
 
     def build_species_facets_url(self, params: GBIFSpeciesFacetsParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params, add_checklist="datasetKey")
         api_params["limit"] = 0
         return self._make_api_url("/v1/species/search", api_params)
 
@@ -114,14 +114,14 @@ class GbifApi:
         return urls
 
     def build_species_match_url(self, params: GBIFSpeciesNameMatchParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params, add_checklist="checklistKey")
         return self._make_api_url("/v2/species/match", api_params)
 
     def build_occurrence_by_id_url(self, gbif_id) -> str:
         return self._make_api_url(f"/v1/occurrence/{gbif_id}")
 
     def build_dataset_search_url(self, params: GBIFDatasetSearchParams) -> str:
-        api_params = self._convert_to_api_params(params, with_checklist=True)
+        api_params = self._convert_to_api_params(params)
         return self._make_api_url("/v1/dataset/search", api_params)
 
     def build_grscicoll_institution_search_url(
