@@ -75,8 +75,8 @@ class GbifApi:
         return api_params
 
     def _make_api_url(self, endpoint: str, parameters: dict | None = None):
-        query_string = urlencode(parameters or {}, doseq=True)
-        return f"{self.base_url}{endpoint}?{query_string}"
+        query_string = "?" + urlencode(parameters or {}, doseq=True) if parameters else ""
+        return f"{self.base_url}{endpoint}{query_string}"
 
     def build_occurrence_search_url(self, params: GBIFOccurrenceSearchParams) -> str:
         api_params = self._convert_to_api_params(params, add_checklist="checklistKey")
