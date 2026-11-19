@@ -1,372 +1,381 @@
 {
-    "find_occurrence_by_id": [
-        {
-            "request": "Find information on jaguars",
-            "response": {
-                "params": null,
-                "unresolved_params": {
-                    "gbifId": [
-                        "Jaguars"
-                    ]
-                },
-                "clarification_needed": true,
-                "clarification_reason": "To search for a specific occurrence by ID, I need the unique GBIF occurrence identifier (gbifId). 'Jaguars' appears to be a species name, not a numeric occurrence ID."
-            },
-            "reasoning": "This endpoint requires a single numeric `gbifId` parameter. The user provided 'jaguars' which is a species name (string), not a numeric occurrence identifier. The parameter types are incompatible, so clarification is mandatory."
+  "find_occurrence_by_id": [
+    {
+      "request": "Find information on jaguars",
+      "response": {
+        "params": null,
+        "unresolved_params": {
+          "gbifId": [
+            "Jaguars"
+          ]
         },
-        {
-            "request": "Get details for occurrence 1234567890",
-            "response": {
-                "params": {
-                    "gbifId": [
-                        1234567890
-                    ]
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "User provided 'occurrence 1234567890' where 1234567890 is clearly a numeric identifier matching the required `gbifId` parameter type. The request is unambiguous and complete."
+        "clarification_needed": true,
+        "clarification_reason": "To search for a specific occurrence by ID, I need the unique GBIF occurrence identifier (gbifId). 'Jaguars' appears to be a species name, not a numeric occurrence ID."
+      },
+      "reasoning": "This endpoint requires a single numeric `gbifId` parameter. The user provided 'jaguars' which is a species name (string), not a numeric occurrence identifier. The parameter types are incompatible, so clarification is mandatory."
+    },
+    {
+      "request": "Get details for occurrence 1234567890",
+      "response": {
+        "params": {
+          "gbifId": [
+            1234567890
+          ]
         },
-        {
-            "request": "Show me record abc123",
-            "response": {
-                "params": null,
-                "unresolved_params": null,
-                "clarification_needed": true,
-                "clarification_reason": "'abc123' appears to be an alphanumeric identifier, but this endpoint requires a numeric GBIF occurrence ID (gbifId). Please provide the numeric GBIF occurrence identifier."
-            },
-            "reasoning": "The identifier 'abc123' is alphanumeric, but `gbifId` must be numeric. This is a type mismatch requiring clarification to get the correct numeric identifier."
-        }
-    ],
-    "find_occurrence_records": [
-        {
-            "request": "Find occurrences of jaguars",
-            "response": {
-                "params": {
-                    "scientificName": [
-                        "Panthera onca"
-                    ]
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "The user request is ambiguous - it could refer to a common name or a scientific name. I was very confident the scientific name of 'jaguar' is 'Panthera onca' from my knowledge and provided it in the `params` field since it is not available directly in the user request."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "User provided 'occurrence 1234567890' where 1234567890 is clearly a numeric identifier matching the required `gbifId` parameter type. The request is unambiguous and complete."
+    },
+    {
+      "request": "Show me record abc123",
+      "response": {
+        "params": null,
+        "unresolved_params": null,
+        "clarification_needed": true,
+        "clarification_reason": "'abc123' appears to be an alphanumeric identifier, but this endpoint requires a numeric GBIF occurrence ID (gbifId). Please provide the numeric GBIF occurrence identifier."
+      },
+      "reasoning": "The identifier 'abc123' is alphanumeric, but `gbifId` must be numeric. This is a type mismatch requiring clarification to get the correct numeric identifier."
+    }
+  ],
+  "find_occurrence_records": [
+    {
+      "request": "Find occurrences of jaguars",
+      "response": {
+        "params": {
+          "scientificName": [
+            "Panthera onca"
+          ]
         },
-        {
-            "request": "find records of only scientific name'this is fake but use it anyway'",
-            "response": {
-                "params": {
-                    "scientificName": "this is fake but use it anyway"
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "The user places a search term in quotes, always use the full text that is quoted, do not break it up."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "The user request is ambiguous - it could refer to a common name or a scientific name. I was very confident the scientific name of 'jaguar' is 'Panthera onca' from my knowledge and provided it in the `params` field since it is not available directly in the user request."
+    },
+    {
+      "request": "find records of only scientific name'this is fake but use it anyway'",
+      "response": {
+        "params": {
+          "scientificName": "this is fake but use it anyway"
         },
-        {
-            "request": "Find occurrences of Panthera onca in Brazil from 2020-2022",
-            "response": {
-                "params": {
-                    "scientificName": [
-                        "Panthera onca"
-                    ],
-                    "year": "2020,2022",
-                    "country": [
-                        "BR"
-                    ]
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "User provided exact scientific name 'Panthera onca', and specific year range clear country 'Brazil' (transforms to ISO code 'BR', hence added to the `params` field)"
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "The user places a search term in quotes, always use the full text that is quoted, do not break it up."
+    },
+    {
+      "request": "Find occurrences of Panthera onca in Brazil from 2020-2022",
+      "response": {
+        "params": {
+          "scientificName": [
+            "Panthera onca"
+          ],
+          "year": "2020,2022",
+          "country": [
+            "BR"
+          ]
         },
-        {
-            "request": "Show me bird sightings in Miami-Dade County",
-            "response": {
-                "params": {
-                    "locality": [
-                        "Miami-Dade County"
-                    ],
-                    "country": [
-                        "US"
-                    ],
-                    "stateProvince": [
-                        "Florida"
-                    ]
-                },
-                "unresolved_params": {
-                    "classKey": [
-                        "Aves"
-                    ]
-                },
-                "clarification_needed": true,
-                "clarification_reason": "I need the classKey for birds to search for records in Miami-Dade County."
-            },
-            "reasoning": "I derived the class name for birds is Aves, since we do not have support to search by class name, hence added to the `unresolved_params` field. The user asked for records in Miami-Dade County, which is in Florida, United States. Hence added to the `params` field."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "User provided exact scientific name 'Panthera onca', and specific year range clear country 'Brazil' (transforms to ISO code 'BR', hence added to the `params` field)"
+    },
+    {
+      "request": "Show me bird sightings in Miami-Dade County",
+      "response": {
+        "params": {
+          "locality": [
+            "Miami-Dade County"
+          ],
+          "country": [
+            "US"
+          ],
+          "stateProvince": [
+            "Florida"
+          ]
         },
-        {
-            "request": "Find Quercus robur specimens with coordinates between 2010 and 2015",
-            "response": {
-                "params": {
-                    "scientificName": [
-                        "Quercus robur"
-                    ],
-                    "hasCoordinate": true,
-                    "year": "2010,2015",
-                    "basisOfRecord": [
-                        "PRESERVED_SPECIMEN"
-                    ]
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "Clear scientific name provided, 'specimens' maps to PRESERVED_SPECIMEN basis of record, 'with coordinates' maps to hasCoordinate=true, and year range is clearly specified. All parameters are deterministic."
+        "unresolved_params": {
+          "classKey": [
+            "Aves"
+          ]
         },
-        {
-            "request": "Get occurrence records with taxon key 2476674 in European countries",
-            "response": {
-                "params": {
-                    "taxonKey": [
-                        2476674
-                    ],
-                    "continent": [
-                        "EUROPE"
-                    ]
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "Specific numeric taxonKey provided (matches literal identifier requirement) and 'European countries' clearly maps to continent parameter."
-        }
-    ],
-    "count_occurrence_records": [
-        {
-            "request": "Give me occurrence counts for Panthera onca faceted by basisOfRecord and year",
-            "response": {
-                "params": {
-                    "scientificName": ["Panthera onca"],
-                    "facet": ["basisOfRecord", "year"],
-                    "facetLimit": 20,
-                    "facetOffset": 0,
-                    "limit": 0
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "Scientific name is exact, facet parameters are explicitly named, and this is clearly a count request (limit=0 for facets only). All requirements are met with no ambiguity. And since facet search is paginated, I have added both facetLimit and facetOffset parameters."
+        "clarification_needed": true,
+        "clarification_reason": "I need the classKey for birds to search for records in Miami-Dade County."
+      },
+      "reasoning": "I derived the class name for birds is Aves, since we do not have support to search by class name, hence added to the `unresolved_params` field. The user asked for records in Miami-Dade County, which is in Florida, United States. Hence added to the `params` field."
+    },
+    {
+      "request": "Find Quercus robur specimens with coordinates between 2010 and 2015",
+      "response": {
+        "params": {
+          "scientificName": [
+            "Quercus robur"
+          ],
+          "hasCoordinate": true,
+          "year": "2010,2015",
+          "basisOfRecord": [
+            "PRESERVED_SPECIMEN"
+          ]
         },
-        {
-            "request": "Break down records by observer in Costa Rica",
-            "response": {
-                "params": {
-                    "country": ["CR"],
-                    "facet": ["recordedBy"],
-                    "facetLimit": 100,
-                    "facetOffset": 0,
-                    "limit": 0
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "'Observer' clearly maps to 'recordedBy' field, 'Costa Rica' transforms to country code 'CR', and 'break down' indicates faceting. The mapping is deterministic. There can be thousands of observers, so both facetLimit and facetOffset parameters are added to paginate the results."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "Clear scientific name provided, 'specimens' maps to PRESERVED_SPECIMEN basis of record, 'with coordinates' maps to hasCoordinate=true, and year range is clearly specified. All parameters are deterministic."
+    },
+    {
+      "request": "Get occurrence records with taxon key 87C5 in European countries",
+      "response": {
+        "params": {
+          "taxonKey": [
+            "87C5"
+          ],
+          "continent": [
+            "EUROPE"
+          ]
         },
-        {
-            "request": "How many Panthera onca records are there in Tanzania?",
-            "response": {
-                "params": {
-                    "scientificName": [
-                        "Panthera onca"
-                    ],
-                    "country": [
-                        "TZ"
-                    ],
-                    "limit": 0
-                },
-                "unresolved_params": null,
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "User wants a simple total count without any breakdown or faceting. The request asks 'how many' without specifying 'by country' or 'by year', so facet parameter is omitted. This will return just the total count."
-        }
-    ],
-    "find_species_records": [
-        {
-            "request": "Find all endangered Panthera species",
-            "response": {
-                "params": {
-                    "q": "Panthera",
-                    "threat": "ENDANGERED",
-                    "qField": "SCIENTIFIC_NAME"
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "'Panthera' is clearly a scientific genus name, 'endangered' maps directly to threat status, and the search intent is clear. All parameters can be confidently determined."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "Specific taxonKey provided (matches literal identifier requirement) and 'European countries' clearly maps to continent parameter."
+    }
+  ],
+  "count_occurrence_records": [
+    {
+      "request": "Give me occurrence counts for Panthera onca faceted by basisOfRecord and year",
+      "response": {
+        "params": {
+          "scientificName": [
+            "Panthera onca"
+          ],
+          "facet": [
+            "basisOfRecord",
+            "year"
+          ],
+          "facetLimit": 20,
+          "facetOffset": 0,
+          "limit": 0
         },
-        {
-            "request": "Show me all cats",
-            "response": {
-                "params": null,
-                "clarification_needed": true,
-                "clarification_reason": "'Cats' is too vague - it could refer to the family Felidae, domestic cats (Felis catus), or be a colloquial term. Please provide a more specific scientific name or clarify the taxonomic scope."
-            },
-            "reasoning": "'Cats' is highly ambiguous and could refer to multiple taxonomic levels or common usage. Without scientific precision, the search would be unreliable."
-        }
-    ],
-    "find_taxonomic_information": [
-        {
-            "request": "Get taxonomy for species 5231190",
-            "response": {
-                "params": {
-                    "key": 5231190
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "Numeric identifier '5231190' clearly matches the required 'key' parameter type. Request is unambiguous and complete."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "Scientific name is exact, facet parameters are explicitly named, and this is clearly a count request (limit=0 for facets only). All requirements are met with no ambiguity. And since facet search is paginated, I have added both facetLimit and facetOffset parameters."
+    },
+    {
+      "request": "Break down records by observer in Costa Rica",
+      "response": {
+        "params": {
+          "country": [
+            "CR"
+          ],
+          "facet": [
+            "recordedBy"
+          ],
+          "facetLimit": 100,
+          "facetOffset": 0,
+          "limit": 0
         },
-        {
-            "request": "Show full classification hierarchy for Panthera onca including synonyms",
-            "response": {
-                "params": {
-                    "name": "Panthera onca",
-                    "includeSynonyms": true,
-                    "includeParents": true
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "Scientific name is provided exactly, 'synonyms' maps to includeSynonyms=True, 'classification hierarchy' indicates includeParents=True. All intent is clear and mappable."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "'Observer' clearly maps to 'recordedBy' field, 'Costa Rica' transforms to country code 'CR', and 'break down' indicates faceting. The mapping is deterministic. There can be thousands of observers, so both facetLimit and facetOffset parameters are added to paginate the results."
+    },
+    {
+      "request": "How many Panthera onca records are there in Tanzania?",
+      "response": {
+        "params": {
+          "scientificName": [
+            "Panthera onca"
+          ],
+          "country": [
+            "TZ"
+          ],
+          "limit": 0
         },
-        {
-            "request": "Get taxonomic info for the big cat from South America",
-            "response": {
-                "params": null,
-                "clarification_needed": true,
-                "clarification_reason": "'Big cat from South America' is descriptive but not specific enough. I need either a numeric species key or the exact scientific name to retrieve taxonomic information."
-            },
-            "reasoning": "Descriptive phrase doesn't provide the required literal identifiers (key or scientific name). Multiple species could match this description, violating the precision requirement."
-        }
-    ],
-    "find_datasets": [
-        {
-            "request": "Find marine biodiversity datasets from European institutions",
-            "response": {
-                "params": {
-                    "q": "marine biodiversity",
-                    "continent": "EUROPE"
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "'Marine biodiversity' is a clear keyword search term, and 'European institutions' maps to continent filter. Both parameters are well-defined."
+        "unresolved_params": null,
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "User wants a simple total count without any breakdown or faceting. The request asks 'how many' without specifying 'by country' or 'by year', so facet parameter is omitted. This will return just the total count."
+    }
+  ],
+  "find_species_records": [
+    {
+      "request": "Find all endangered Panthera species",
+      "response": {
+        "params": {
+          "q": "Panthera",
+          "threat": "ENDANGERED",
+          "qField": "SCIENTIFIC_NAME"
         },
-        {
-            "request": "Show me the most comprehensive taxonomic datasets about birds of united states",
-            "response": {
-                "params": {
-                    "taxonKey": [
-                        212
-                    ],
-                    "type": "CHECKLIST",
-                    "category": "taxonomy",
-                    "country": "US"
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "We are searching for checklist datasets about birds of United States. Birds scientific name is 'Aves', 'United States' ISO code is 'US'. All required information is present and transformable to API format."
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "'Panthera' is clearly a scientific genus name, 'endangered' maps directly to threat status, and the search intent is clear. All parameters can be confidently determined."
+    },
+    {
+      "request": "Show me all cats",
+      "response": {
+        "params": null,
+        "clarification_needed": true,
+        "clarification_reason": "'Cats' is too vague - it could refer to the family Felidae, domestic cats (Felis catus), or be a colloquial term. Please provide a more specific scientific name or clarify the taxonomic scope."
+      },
+      "reasoning": "'Cats' is highly ambiguous and could refer to multiple taxonomic levels or common usage. Without scientific precision, the search would be unreliable."
+    }
+  ],
+  "find_taxonomic_information": [
+    {
+      "request": "Get taxonomy for species 74SZC",
+      "response": {
+        "params": {
+          "key": "74SZC"
         },
-        {
-            "request": "find datasets containing records of taxonKey=5219234 (Vulpes) in United States, Ohio",
-            "response": {
-                "params": {
-                    "taxonKey": [
-                        5219234
-                    ],
-                    "type": "CHECKLIST",
-                    "country": "US",
-                    "q": "Ohio"
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "We are searching for checklist datasets containing records of taxonKey=5219234 (Vulpes) in United States, Ohio. All required information is present and transformable to API format."
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "The taxon key '74SZC' clearly matches the required 'key' parameter type. Request is unambiguous and complete."
+    },
+    {
+      "request": "Show full classification hierarchy for Panthera onca including synonyms",
+      "response": {
+        "params": {
+          "name": "Panthera onca",
+          "includeSynonyms": true,
+          "includeParents": true
         },
-        {
-            "request": "Find occurrence datasets that are also specimen collections",
-            "response": {
-                "params": null,
-                "clarification_needed": true,
-                "clarification_reason": "Dataset type can only be one value (OCCURRENCE, CHECKLIST, etc.). Did you mean occurrence datasets that contain specimen records, or are you looking for a specific dataset subtype?"
-            },
-            "reasoning": "The 'type' parameter accepts only one value, so datasets cannot be both OCCURRENCE and another type simultaneously. This represents a logical constraint violation requiring clarification."
-        }
-    ],
-    "count_species_records": [
-        {
-            "request": "Count species by kingdom",
-            "response": {
-                "params": {
-                    "facet": [
-                        "kingdom"
-                    ],
-                    "facetLimit": 20,
-                    "facetOffset": 0
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "The user wants a count of species grouped by kingdom, which maps to a facet search on the 'kingdom' field."
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "Scientific name is provided exactly, 'synonyms' maps to includeSynonyms=True, 'classification hierarchy' indicates includeParents=True. All intent is clear and mappable."
+    },
+    {
+      "request": "Get taxonomic info for the big cat from South America",
+      "response": {
+        "params": null,
+        "clarification_needed": true,
+        "clarification_reason": "'Big cat from South America' is descriptive but not specific enough. I need either a taxon key or the exact scientific name to retrieve taxonomic information."
+      },
+      "reasoning": "Descriptive phrase doesn't provide the required literal identifiers (key or scientific name). Multiple species could match this description, violating the precision requirement."
+    }
+  ],
+  "find_datasets": [
+    {
+      "request": "Find marine biodiversity datasets from European institutions",
+      "response": {
+        "params": {
+          "q": "marine biodiversity",
+          "continent": "EUROPE"
         },
-        {
-            "request": "How many endangered species are there?",
-            "response": {
-                "params": {
-                    "threat": "ENDANGERED",
-                    "facetLimit": 20,
-                    "facetOffset": 0,
-                    "limit": 0
-                },
-                "clarification_needed": false,
-                "clarification_reason": null
-            },
-            "reasoning": "The user wants a count of species with threat status 'ENDANGERED'. This maps directly to the 'threat' parameter."
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "'Marine biodiversity' is a clear keyword search term, and 'European institutions' maps to continent filter. Both parameters are well-defined."
+    },
+    {
+      "request": "Show me the most comprehensive taxonomic datasets about birds of united states",
+      "response": {
+        "params": {
+          "taxonKey": [
+            "V2"
+          ],
+          "type": "CHECKLIST",
+          "category": "taxonomy",
+          "country": "US"
         },
-        {
-            "request": "Count the number of species with the genus Rattus?",
-            "response": {
-                "q": "Rattus",
-                "qField": "scientificName",
-                "rank": "GENUS",
-                "facetLimit": 20,
-                "facetOffset": 0,
-                "limit": 0
-            },
-            "reasoning": "The user wants to count the number of species with the genus Rattus. I have added the scientific name 'Rattus' to the `q` field and the rank 'GENUS' to the `rank` field. Since it is a count request, I have also added the `limit`=0."
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "We are searching for checklist datasets about birds of United States. Birds scientific name is 'Aves', 'United States' ISO code is 'US'. All required information is present and transformable to API format."
+    },
+    {
+      "request": "find datasets containing records of taxonKey=87C5 (Vulpes) in United States, Ohio",
+      "response": {
+        "params": {
+          "taxonKey": [
+            "87C5"
+          ],
+          "type": "CHECKLIST",
+          "country": "US",
+          "q": "Ohio"
         },
-        {
-            "request": "Count the number of Rattus species and group them by rank and threat status",
-            "response": {
-                "q": "Rattus",
-                "qField": "scientificName",
-                "facet": [
-                    "rank",
-                    "threat"
-                ],
-                "facetLimit": 20,
-                "facetOffset": 0,
-                "limit": 0
-            },
-            "reasoning": "The user wants to count the number of species with the genus Rattus and group them by rank and threat status. I have added the scientific name 'Rattus' to the `q` field. To group the counts I used the `facet` field. Since it is a count request with facets, I have added the `facetLimit`, `facetOffset` along with `limit`=0 field."
-        }
-    ]
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "We are searching for checklist datasets containing records of taxonKey=87C5 (Vulpes) in United States, Ohio. All required information is present and transformable to API format."
+    },
+    {
+      "request": "Find occurrence datasets that are also specimen collections",
+      "response": {
+        "params": null,
+        "clarification_needed": true,
+        "clarification_reason": "Dataset type can only be one value (OCCURRENCE, CHECKLIST, etc.). Did you mean occurrence datasets that contain specimen records, or are you looking for a specific dataset subtype?"
+      },
+      "reasoning": "The 'type' parameter accepts only one value, so datasets cannot be both OCCURRENCE and another type simultaneously. This represents a logical constraint violation requiring clarification."
+    }
+  ],
+  "count_species_records": [
+    {
+      "request": "Count species by kingdom",
+      "response": {
+        "params": {
+          "facet": [
+            "kingdom"
+          ],
+          "facetLimit": 20,
+          "facetOffset": 0
+        },
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "The user wants a count of species grouped by kingdom, which maps to a facet search on the 'kingdom' field."
+    },
+    {
+      "request": "How many endangered species are there?",
+      "response": {
+        "params": {
+          "threat": "ENDANGERED",
+          "facetLimit": 20,
+          "facetOffset": 0,
+          "limit": 0
+        },
+        "clarification_needed": false,
+        "clarification_reason": null
+      },
+      "reasoning": "The user wants a count of species with threat status 'ENDANGERED'. This maps directly to the 'threat' parameter."
+    },
+    {
+      "request": "Count the number of species with the genus Rattus?",
+      "response": {
+        "q": "Rattus",
+        "qField": "scientificName",
+        "rank": "GENUS",
+        "facetLimit": 20,
+        "facetOffset": 0,
+        "limit": 0
+      },
+      "reasoning": "The user wants to count the number of species with the genus Rattus. I have added the scientific name 'Rattus' to the `q` field and the rank 'GENUS' to the `rank` field. Since it is a count request, I have also added the `limit`=0."
+    },
+    {
+      "request": "Count the number of Rattus species and group them by rank and threat status",
+      "response": {
+        "q": "Rattus",
+        "qField": "scientificName",
+        "facet": [
+          "rank",
+          "threat"
+        ],
+        "facetLimit": 20,
+        "facetOffset": 0,
+        "limit": 0
+      },
+      "reasoning": "The user wants to count the number of species with the genus Rattus and group them by rank and threat status. I have added the scientific name 'Rattus' to the `q` field. To group the counts I used the `facet` field. Since it is a count request with facets, I have added the `facetLimit`, `facetOffset` along with `limit`=0 field."
+    }
+  ]
 }
