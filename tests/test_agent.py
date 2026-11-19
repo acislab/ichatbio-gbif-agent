@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import AsyncMock, patch
+
+import pytest
 
 
 def test_get_agent_card(agent):
@@ -10,7 +11,7 @@ def test_get_agent_card(agent):
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.occurrences.search.run")
+@patch("entrypoints.occurrences.search.run")
 async def test_routes_to_correct_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "find_occurrence_records", None)
@@ -18,7 +19,7 @@ async def test_routes_to_correct_entrypoint(mock_run, agent, context):
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.occurrences.count.run")
+@patch("entrypoints.occurrences.count.run")
 async def test_routes_count_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "count_occurrence_records", None)
@@ -26,7 +27,7 @@ async def test_routes_count_entrypoint(mock_run, agent, context):
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.occurrences.search_by_id.run")
+@patch("entrypoints.occurrences.search_by_id.run")
 async def test_routes_find_occurrence_by_id_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "find_occurrence_by_id", None)
@@ -34,7 +35,7 @@ async def test_routes_find_occurrence_by_id_entrypoint(mock_run, agent, context)
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.species.search.run")
+@patch("entrypoints.species.search.run")
 async def test_routes_find_species_records_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "find_species_records", None)
@@ -42,7 +43,7 @@ async def test_routes_find_species_records_entrypoint(mock_run, agent, context):
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.species.count.run")
+@patch("entrypoints.species.count.run")
 async def test_routes_count_species_records_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "count_species_records", None)
@@ -50,7 +51,7 @@ async def test_routes_count_species_records_entrypoint(mock_run, agent, context)
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.species.search_taxa.run")
+@patch("entrypoints.species.search_taxa.run")
 async def test_routes_find_species_taxonomic_information_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "find_taxonomic_information", None)
@@ -58,7 +59,7 @@ async def test_routes_find_species_taxonomic_information_entrypoint(mock_run, ag
 
 
 @pytest.mark.asyncio
-@patch("src.entrypoints.registry.search.run")
+@patch("entrypoints.registry.search.run")
 async def test_routes_find_datasets_entrypoint(mock_run, agent, context):
     mock_run.return_value = AsyncMock()
     await agent.run(context, "test", "find_datasets", None)

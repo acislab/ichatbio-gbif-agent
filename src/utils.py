@@ -2,11 +2,11 @@ import dataclasses
 import json
 from importlib import resources
 
-from pydantic import BaseModel, Field, model_validator, ConfigDict
 from instructor_client import get_client
 from log import logger
 from models.bionomia import BionomiaNameRecord, NameMatchResult
 from models.location import Location
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 from util_types import ParameterEnum
 
 
@@ -199,7 +199,7 @@ async def _preprocess_user_request(user_request: str):
     Translates organism-related terms in user request to scientific nomenclature
     and extracts location information.
     """
-    system_prompt = resources.read_text("src.resources.prompts", "preprocess_request.md")
+    system_prompt = resources.read_text("resources.prompts", "preprocess_request.md")
 
     messages = [
         {"role": "system", "content": system_prompt},

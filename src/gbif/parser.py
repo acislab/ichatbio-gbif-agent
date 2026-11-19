@@ -4,11 +4,11 @@ from importlib import resources
 from typing import Type, TypeVar
 
 from instructor.core.exceptions import InstructorRetryException
-from pydantic import BaseModel, Field, create_model
 from instructor_client import get_client
 from models.location import ResolvedLocation, GadmMatchType
-from utils import UserRequestExpansion, IdentifiedOrganism
+from pydantic import BaseModel, Field, create_model
 from tenacity import retry, stop_after_attempt, wait_exponential
+from utils import UserRequestExpansion, IdentifiedOrganism
 
 CURRENT_DATE = datetime.datetime.now().strftime("%B %d, %Y")
 
@@ -74,9 +74,9 @@ def create_response_model(parameter_model: Type[BaseModel]) -> Type[BaseModel]:
 
 
 def get_system_prompt(entrypoint_id: str):
-    prompt = resources.read_text("src.resources.prompts", "parse_api_parameters.md")
+    prompt = resources.read_text("resources.prompts", "parse_api_parameters.md")
 
-    entrypoint_examples = json.loads(resources.read_text("src.resources", "fewshot.json"))
+    entrypoint_examples = json.loads(resources.read_text("resources", "fewshot.json"))
     assert isinstance(entrypoint_examples, dict)
 
     examples = entrypoint_examples.get(entrypoint_id, ())
