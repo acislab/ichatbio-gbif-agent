@@ -1,11 +1,11 @@
 import json
 import uuid
 
-from ichatbio.agent_response import ResponseContext
-from ichatbio.types import AgentEntrypoint
 from gbif.api import GbifApi
 from gbif.fetch import execute_request
 from gbif.parser import parse
+from ichatbio.agent_response import ResponseContext
+from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.validators import SpeciesFacetsParamsValidator
 from utils import _preprocess_user_request, serialize_organisms
@@ -16,7 +16,7 @@ description = """
 - **Route to this when**: The user wants counts of taxonomic entities (e.g., species/genera/families) based on taxonomy or status, independent of where/when they were observed. Examples include “how many species in Plantae?”, “number of endangered bird species worldwide,” “breakdown by rank.”
 - **Do NOT use when**: The prompt includes any location, date/time, geospatial constraint, or mentions occurrences/records/observations/collected/specimens. Those must go to occurrence-based counting.
 
-**Use Case:** Count GBIF name usages (taxonomic entities), not observations. Returns aggregated counts and facets over the taxonomic backbone.
+**Use Case:** Count taxon name usages (taxonomic entities), not observations. Returns aggregated counts and facets.
 
 **Triggers On (strong):** “how many species/genera/families,” “unique taxa (globally),” “by rank,” “by status,” “taxonomic breakdown,” “distinct taxa (no place/time).”
 **Avoid If Present:** “in/within/near [place],” country/geometry/GADM, year/date/temporal filters, “records/occurrences/observed/collected/specimens.”

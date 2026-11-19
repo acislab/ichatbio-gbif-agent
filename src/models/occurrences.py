@@ -1,12 +1,12 @@
 from datetime import datetime
 from uuid import UUID
 
-from models.base import ProductionBaseModel
-from pydantic import Field, field_validator
 from enums.common import ContinentEnum, LicenseEnum, GbifRegionEnum, MediaObjectTypeEnum, CountryEnum
 from enums.occurrences import BasisOfRecordEnum, OccurrenceStatusEnum
 from enums.species import TaxonomicStatusEnum, TypeStatusEnum
 from log import logger
+from models.base import ProductionBaseModel
+from pydantic import Field, field_validator
 
 
 class TaxonomicFilters(ProductionBaseModel):
@@ -14,7 +14,7 @@ class TaxonomicFilters(ProductionBaseModel):
 
     scientificName: list[str] | None = Field(
         None,
-        description="Only use this parameter if the user has provided a scientific name. A scientific name from the GBIF backbone or the specified checklist. All included and synonym taxa are included in the search. Under the hood a call to the species match service is done first to retrieve a taxonKey. Only unique scientific names will return results, homonyms (many monomials) return nothing! Consider to use the taxonKey parameter instead and the species match service directly",
+        description="Only use this parameter if the user has provided a scientific name. All included and synonym taxa are included in the search. Under the hood a call to the species match service is done first to retrieve a taxonKey. Only unique scientific names will return results, homonyms (many monomials) return nothing! Consider to use the taxonKey parameter instead and the species match service directly",
         examples=[
             ["Quercus robur"],
             ["Homo sapiens", "Canis lupus"],
@@ -300,7 +300,7 @@ class TemporalFilters(ProductionBaseModel):
         None,
         description="""This date the record was last modified in GBIF, in ISO 8601 format: yyyy, yyyy-MM, yyyy-MM-dd, or MM-dd.
         
-        Note that this is the date the record was last changed in GBIF, not necessarily the date the record was first/last changed by the publisher. Data is re-interpreted when we change the taxonomic backbone, geographic data sources, or interpretation processes.
+        Note that this is the date the record was last changed in GBIF, not necessarily the date the record was first/last changed by the publisher. Data is re-interpreted when GBIF changes the taxonomic backbone, geographic data sources, or interpretation processes.
         
         Parameter may be repeated or a range.""",
         examples=[["2023-02"]]

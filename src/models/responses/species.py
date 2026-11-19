@@ -17,11 +17,10 @@ class NameUsage(BaseModel):
                                 description="The scientific name, with date and authorship information if available.")
 
     # Optional fields
-    nubKey: int | None = Field(None, description="The taxon key of the matching backbone name usage.")
+    nubKey: int | None = Field(None, description="The taxon key of the matching name usage.")
     nameKey: int | None = Field(None, description="The key for retrieving a parsed name object.")
     taxonID: str | None = Field(None, description="The original taxonID of the name usage as found in the source.")
-    sourceTaxonKey: int | None = Field(None,
-                                       description="The key of the name usage from which this backbone taxon derives.")
+    sourceTaxonKey: int | None = Field(None, description="The key of the name usage from which this taxon derives.")
 
     # Taxonomic classification
     kingdom: str | None = Field(None, description="Kingdom.")

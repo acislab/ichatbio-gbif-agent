@@ -3,8 +3,6 @@ import uuid
 from dataclasses import dataclass
 from typing import Iterable
 
-from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
-from ichatbio.types import AgentEntrypoint
 from bionomia import normalize_name
 from gadm.gadm import map_locations_to_gadm, serialize_locations
 from gbif.api import GbifApi
@@ -12,6 +10,8 @@ from gbif.fetch import execute_request, execute_multiple_requests
 from gbif.parser import parse
 from gbif.resolve_parameters import resolve_names_to_taxonkeys, resolve_pending_search_parameters
 from grscicoll import normalize_institution
+from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
+from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.entrypoints import GBIFOccurrenceFacetsParams
 from models.validators import OccurrenceFacetsParamsValidator
@@ -48,7 +48,7 @@ description = """
 - “Number of endangered bird species worldwide.”
 - “Taxonomic breakdown of Mammalia by rank.”
 
-Limitations: Returns aggregated summaries over occurrence records; not the same as the taxonomic backbone counts. For full record details, use the record/search endpoints.
+Limitations: Returns aggregated summaries over occurrence records. For full record details, use the record/search endpoints.
 """
 
 entrypoint = AgentEntrypoint(
