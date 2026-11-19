@@ -1,7 +1,6 @@
 """
 GrSciColl API models for institution normalization and matching.
 """
-from typing import Union
 
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -25,7 +24,7 @@ class GrSciCollInstitutionRecord(BaseModel):
     key: str | None = Field(None, description="Institution UUID key")
     code: str | None = Field(None, description="Institution code")
     name: str | None = Field(None, description="Institution name")
-    alternativeCodes: list[Union[AlternativeCode, str]] = Field(
+    alternativeCodes: list[AlternativeCode | str] = Field(
         default_factory=list,
         description="list of alternative codes (can be strings or objects)"
     )

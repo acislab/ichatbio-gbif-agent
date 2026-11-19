@@ -1,7 +1,6 @@
 """
 Pydantic models for GBIF Species API responses based on the OpenAPI specification.
 """
-from typing import Union
 
 from pydantic import BaseModel, Field
 
@@ -124,4 +123,4 @@ class PagingResponseNameUsage(BaseModel):
     results: list[NameUsage] = Field(..., description="Search results.")
 
 
-SpeciesAPIResponse = Union[NameUsage, PagingResponseNameUsage]
+SpeciesAPIResponse = NameUsage | PagingResponseNameUsage

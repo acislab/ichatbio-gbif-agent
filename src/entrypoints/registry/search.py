@@ -2,13 +2,11 @@ import uuid
 
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentEntrypoint
-
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
-from src.models.validators import DatasetSearchParamsValidator
-from src.log import with_logging, logger
 from src.gbif.parser import parse
-
+from src.log import with_logging, logger
+from src.models.validators import DatasetSearchParamsValidator
 
 description = """
 **Use Case:** Use this entrypoint to find datasets, collections, or other data sources in the GBIF Registry based on their metadata (e.g., title, publishing country, license).
@@ -83,7 +81,7 @@ async def run(context: ResponseContext, request: str):
             }
             pagination_message = "API pagination information of the response"
             if page_info.get("count") > page_info.get("limit") + page_info.get(
-                "offset"
+                    "offset"
             ):
                 pagination_message = "Warning: The response is truncated due to pagination and only contain subset of the data available on GBIF."
             await process.log(pagination_message, data=page_info)

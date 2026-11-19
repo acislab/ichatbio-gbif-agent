@@ -4,12 +4,12 @@ Bionomia Name Normalization - Simple single function
 import requests
 from ichatbio.agent_response import IChatBioAgentProcess
 from src.gbif.fetch import execute_request
-from src.utils import find_best_name_match
 from src.models.bionomia import BionomiaNameRecord
+from src.utils import find_best_name_match
 
 
 async def normalize_name(
-    process: IChatBioAgentProcess, name: str, threshold: float = 0.7, timeout: int = 10
+        process: IChatBioAgentProcess, name: str, threshold: float = 0.7, timeout: int = 10
 ) -> dict:
     """
     Normalize a collector/determiner name using Bionomia API.

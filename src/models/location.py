@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from pydantic import BaseModel, Field
 from src.enums.common import CountryEnum
 from util_types import ParameterEnum
@@ -54,12 +52,12 @@ class Location(BaseModel):
     # ========================================================================
 
     @property
-    def most_specific(self) -> Tuple[str | None, str | None]:
+    def most_specific(self) -> tuple[str | None, str | None]:
         """
         Return (level, name) of most specific location.
 
         Returns:
-            Tuple of (level_name, place_name) or (None, None) if empty
+            (level_name, place_name) or (None, None) if empty
 
         Example:
             >>> loc = Location(country="USA", state="Florida", county="Alachua")
@@ -79,7 +77,7 @@ class Location(BaseModel):
         return (None, None)
 
     @property
-    def hierarchy_list(self) -> list[Tuple[str, str]]:
+    def hierarchy_list(self) -> list[tuple[str, str]]:
         """
         Return list of (level, name) from least to most specific.
 
@@ -106,7 +104,7 @@ class Location(BaseModel):
             result.append(("protected_area", self.protected_area))
         return result
 
-    def get_hierarchy(self) -> list[Tuple[int, str, str]]:
+    def get_hierarchy(self) -> list[tuple[int, str, str]]:
         """
         Get location hierarchy as list of (gadm_level, level_name, place_name).
 

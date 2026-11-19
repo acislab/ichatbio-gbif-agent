@@ -7,7 +7,6 @@ Module for resolving taxonomic names to GBIF keys automatically.
 """
 
 from pydantic import BaseModel, Field
-from typing import Tuple
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
 from ichatbio.agent_response import IChatBioAgentProcess
@@ -169,7 +168,7 @@ async def resolve_pending_search_parameters(
         user_request: str,
         api: GbifApi,
         process: IChatBioAgentProcess,
-) -> Tuple[dict[str, list[int]], list[str]]:
+) -> tuple[dict[str, list[int]], list[str]]:
     """
     Attempt to resolve clarification fields automatically.
 
@@ -180,7 +179,7 @@ async def resolve_pending_search_parameters(
         process: Process for logging
 
     Returns:
-        Tuple of (resolved_fields_dict, remaining_unresolved_fields)
+        (resolved_fields_dict, remaining_unresolved_fields)
     """
     resolved = {}
     unresolved = []

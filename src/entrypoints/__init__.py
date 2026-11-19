@@ -1,6 +1,6 @@
 from . import occurrences
-from . import species
 from . import registry
+from . import species
 
 __all__ = [
     "occurrences",

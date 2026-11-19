@@ -1,7 +1,6 @@
 import asyncio
 import os
 import sqlite3
-from typing import Tuple
 
 from ichatbio.agent_response import IChatBioAgentProcess
 from src.log import logger
@@ -48,7 +47,7 @@ def _get_table_columns(conn: sqlite3.Connection, table: str) -> list[str]:
 
 def _build_name_match_clause(
         level: int, place_name: str, cols: list[str]
-) -> Tuple[str, list[str]]:
+) -> tuple[str, list[str]]:
     """
     Build SQL WHERE clause for matching place name at a specific GADM level.
 
@@ -61,7 +60,7 @@ def _build_name_match_clause(
         cols: Available columns in the table
 
     Returns:
-        Tuple of (SQL clause, parameter list)
+        (SQL clause, parameter list)
     """
     name_cols = [
         c
@@ -80,7 +79,7 @@ def _build_name_match_clause(
 
 def _build_parent_constraint_clause(
         level: int, parent_gid: str | None, cols: list[str]
-) -> Tuple[str, list[str]]:
+) -> tuple[str, list[str]]:
     """
     Build SQL WHERE clause for parent GID constraint.
 
@@ -90,7 +89,7 @@ def _build_parent_constraint_clause(
         cols: Available columns in the table
 
     Returns:
-        Tuple of (SQL clause, parameter list), or ("1=1", []) if no constraint
+        (SQL clause, parameter list), or ("1=1", []) if no constraint
     """
     if not parent_gid or level == 0:
         return "1=1", []

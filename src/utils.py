@@ -1,7 +1,6 @@
 import dataclasses
 import json
 from importlib import resources
-from typing import Union
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict
 from src.instructor_client import get_client
@@ -264,7 +263,7 @@ For each match in selected_matches:
 
 
 async def find_best_name_match(
-        name: str, bionomia_matches: list[Union[BionomiaNameRecord, dict]]
+        name: str, bionomia_matches: list[BionomiaNameRecord | dict]
 ) -> NameMatchResult:
     # Convert all matches to BionomiaNameRecord objects and assign match_ids
     matches_with_ids = []

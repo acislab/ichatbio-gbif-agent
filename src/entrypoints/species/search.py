@@ -1,16 +1,14 @@
-import uuid
 import json
+import uuid
 
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentEntrypoint
-
 from src.gbif.api import GbifApi
 from src.gbif.fetch import execute_request
-from src.models.validators import SpeciesSearchParamsValidator
-from src.log import with_logging, logger
 from src.gbif.parser import parse
+from src.log import with_logging, logger
+from src.models.validators import SpeciesSearchParamsValidator
 from src.utils import _preprocess_user_request, serialize_organisms
-
 
 description = """
 **Use Case:** Use this entrypoint to find species using a general search term (like a common or scientific name).
@@ -113,7 +111,7 @@ async def run(context: ResponseContext, request: str):
             }
             pagination_message = "API pagination information of the response"
             if page_info.get("count") > (
-                page_info.get("limit") + page_info.get("offset")
+                    page_info.get("limit") + page_info.get("offset")
             ):
                 pagination_message = "Warning: The response is truncated due to pagination and only contain subset of the data available on GBIF."
             await process.log(pagination_message, data=page_info)
