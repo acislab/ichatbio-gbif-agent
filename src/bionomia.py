@@ -3,9 +3,9 @@ Bionomia Name Normalization - Simple single function
 """
 import requests
 from ichatbio.agent_response import IChatBioAgentProcess
-from src.gbif.fetch import execute_request
-from src.models.bionomia import BionomiaNameRecord
-from src.utils import find_best_name_match
+from gbif.fetch import execute_request
+from models.bionomia import BionomiaNameRecord
+from utils import find_best_name_match
 
 
 async def normalize_name(

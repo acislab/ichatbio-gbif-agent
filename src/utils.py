@@ -3,10 +3,10 @@ import json
 from importlib import resources
 
 from pydantic import BaseModel, Field, model_validator, ConfigDict
-from src.instructor_client import get_client
-from src.log import logger
-from src.models.bionomia import BionomiaNameRecord, NameMatchResult
-from src.models.location import Location
+from instructor_client import get_client
+from log import logger
+from models.bionomia import BionomiaNameRecord, NameMatchResult
+from models.location import Location
 from util_types import ParameterEnum
 
 

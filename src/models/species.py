@@ -1,6 +1,6 @@
 from models.base import ProductionBaseModel
 from pydantic import Field
-from src.enums.species import (
+from enums.species import (
     NameTypeEnum,
     TaxonomicRankEnum,
     TaxonomicStatusEnum,

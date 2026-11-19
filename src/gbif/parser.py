@@ -5,9 +5,9 @@ from typing import Type, TypeVar
 
 from instructor.core.exceptions import InstructorRetryException
 from pydantic import BaseModel, Field, create_model
-from src.instructor_client import get_client
-from src.models.location import ResolvedLocation, GadmMatchType
-from src.utils import UserRequestExpansion, IdentifiedOrganism
+from instructor_client import get_client
+from models.location import ResolvedLocation, GadmMatchType
+from utils import UserRequestExpansion, IdentifiedOrganism
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 CURRENT_DATE = datetime.datetime.now().strftime("%B %d, %Y")

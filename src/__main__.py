@@ -1,7 +1,7 @@
 from agent import GBIFAgent
 from dotenv import load_dotenv
 from ichatbio.server import run_agent_server
-from src.log import setup_logger
+from log import setup_logger
 
 if __name__ == "__main__":
     # Force logger initialization

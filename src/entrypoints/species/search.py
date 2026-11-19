@@ -3,12 +3,12 @@ import uuid
 
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentEntrypoint
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request
-from src.gbif.parser import parse
-from src.log import with_logging, logger
-from src.models.validators import SpeciesSearchParamsValidator
-from src.utils import _preprocess_user_request, serialize_organisms
+from gbif.api import GbifApi
+from gbif.fetch import execute_request
+from gbif.parser import parse
+from log import with_logging, logger
+from models.validators import SpeciesSearchParamsValidator
+from utils import _preprocess_user_request, serialize_organisms
 
 description = """
 **Use Case:** Use this entrypoint to find species using a general search term (like a common or scientific name).

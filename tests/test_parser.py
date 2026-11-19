@@ -1,7 +1,8 @@
-import pytest
 from unittest.mock import patch, AsyncMock
+
+import pytest
+from gbif.parser import parse, create_response_model
 from pydantic import BaseModel, Field
-from src.gbif.parser import parse, create_response_model
 
 
 class MockParameters(BaseModel):
@@ -49,7 +50,7 @@ async def test_parse_handles_api_error(mock_instructor):
 @pytest.mark.asyncio
 @patch("instructor.from_provider")
 async def test_parse_success_and_message_structure(
-    mock_instructor, mock_openai_response
+        mock_instructor, mock_openai_response
 ):
     mock_client = AsyncMock()
     mock_client.chat.completions.create.return_value = mock_openai_response

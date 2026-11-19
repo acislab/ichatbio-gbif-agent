@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 from pydantic import BaseModel, model_validator, ValidationInfo, field_validator
-from src.models.entrypoints import (
+from models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceByIdParams,
     GBIFSpeciesSearchParams,
@@ -10,7 +10,7 @@ from src.models.entrypoints import (
     GBIFOccurrenceFacetsParams,
     GBIFSpeciesFacetsParams,
 )
-from src.models.registry import GBIFGrSciCollInstitutionSearchParams
+from models.registry import GBIFGrSciCollInstitutionSearchParams
 
 
 class RequestValidationMixin(BaseModel):

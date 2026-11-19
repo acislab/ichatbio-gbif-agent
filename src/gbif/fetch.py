@@ -3,7 +3,7 @@ from typing import Any
 
 import requests
 from ichatbio.agent_response import IChatBioAgentProcess
-from src.log import logger
+from log import logger
 
 
 def execute_sync_request(url: str, max_retries: int = 3) -> dict[str, Any]:

@@ -34,4 +34,4 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 USER nonroot
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 9999
-CMD ["uvicorn", "src.agent:create_app", "--factory", "--host", "0.0.0.0", "--port", "9999"]
+CMD ["uvicorn", "--app-dir", "src", "agent:create_app", "--factory", "--host", "0.0.0.0", "--port", "9999"]

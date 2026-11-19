@@ -1,11 +1,7 @@
 import pytest
-from pydantic import ValidationError
-
 from enums.occurrences import BasisOfRecordEnum
-from src.models.entrypoints import (
-    GBIFOccurrenceSearchParams,
-    GBIFOccurrenceFacetsParams
-)
+from models.entrypoints import GBIFOccurrenceSearchParams, GBIFOccurrenceFacetsParams
+from pydantic import ValidationError
 
 
 def test_valid_basic_params():
@@ -29,7 +25,7 @@ def test_valid_facets_configuration():
     assert params.facetMincount == 10
 
 
-@pytest.mark.skip("Is facet no longer required?") # TODO
+@pytest.mark.skip("Is facet no longer required?")  # TODO
 def test_required_facet_parameter():
     # Test that facet parameter is required
     with pytest.raises(ValidationError) as exc_info:

@@ -1,14 +1,14 @@
-from src.instructor_client import get_client
-from src.models.entrypoints import GBIFSpeciesNameMatchParams
-from src.utils import IdentifiedOrganism
+from instructor_client import get_client
+from models.entrypoints import GBIFSpeciesNameMatchParams
+from utils import IdentifiedOrganism
 
 """
 Module for resolving taxonomic names to GBIF keys automatically.
 """
 
 from pydantic import BaseModel, Field
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request
+from gbif.api import GbifApi
+from gbif.fetch import execute_request
 from ichatbio.agent_response import IChatBioAgentProcess
 
 

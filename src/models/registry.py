@@ -8,8 +8,8 @@ from uuid import UUID
 
 from models.common import PaginationParams
 from pydantic import Field
-from src.enums.common import CountryEnum, GbifRegionEnum
-from src.enums.registry import (
+from enums.common import CountryEnum, GbifRegionEnum
+from enums.registry import (
     MasterSourceTypeEnum,
     MasterSourceEnum,
     IdentifierTypeEnum,

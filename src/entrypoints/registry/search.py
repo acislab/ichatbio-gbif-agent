@@ -2,11 +2,11 @@ import uuid
 
 from ichatbio.agent_response import ResponseContext
 from ichatbio.types import AgentEntrypoint
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request
-from src.gbif.parser import parse
-from src.log import with_logging, logger
-from src.models.validators import DatasetSearchParamsValidator
+from gbif.api import GbifApi
+from gbif.fetch import execute_request
+from gbif.parser import parse
+from log import with_logging, logger
+from models.validators import DatasetSearchParamsValidator
 
 description = """
 **Use Case:** Use this entrypoint to find datasets, collections, or other data sources in the GBIF Registry based on their metadata (e.g., title, publishing country, license).

@@ -2,7 +2,7 @@
 import asyncio
 
 from ichatbio.agent_response import ResponseContext
-from src.agent import GBIFAgent
+from agent import GBIFAgent
 
 
 class SimpleInMemoryContext(ResponseContext):

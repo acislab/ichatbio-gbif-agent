@@ -1,7 +1,7 @@
 [project]
 name = "ichatbio-gbif-agent"
 version = "0.1.0"
-description = "Add your description here"
+description = "An iChatBio agent that retrieves biodiversity data from GBIF."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

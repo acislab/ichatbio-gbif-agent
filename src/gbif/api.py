@@ -9,7 +9,7 @@ from uuid import UUID
 import httpx
 from httpx import AsyncClient
 from pydantic import BaseModel
-from src.models.entrypoints import (
+from models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceFacetsParams,
     GBIFSpeciesNameMatchParams,
@@ -18,7 +18,7 @@ from src.models.entrypoints import (
     GBIFSpeciesTaxonomicParams,
     GBIFDatasetSearchParams,
 )
-from src.models.registry import GBIFGrSciCollInstitutionSearchParams
+from models.registry import GBIFGrSciCollInstitutionSearchParams
 
 COL_CHECKLIST_KEY = "7ddf754f-d193-4cc9-b351-99906754a03b"
 

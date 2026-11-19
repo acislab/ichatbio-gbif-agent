@@ -7,8 +7,8 @@ from ichatbio.agent_response import ResponseContext
 from ichatbio.server import build_agent_app
 from ichatbio.types import AgentCard
 from pydantic import BaseModel
-from src.entrypoints import occurrences, species, registry
-from src.log import logger
+from entrypoints import occurrences, species, registry
+from log import logger
 from starlette.applications import Starlette
 from typing_extensions import override
 

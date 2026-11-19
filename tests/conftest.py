@@ -1,8 +1,7 @@
 import pytest
+from agent import GBIFAgent
 from app_config import reload
 from dotenv import load_dotenv
-
-from src.agent import GBIFAgent
 
 load_dotenv()
 reload()

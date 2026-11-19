@@ -4,24 +4,24 @@ from dataclasses import dataclass
 
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
-from src.bionomia import normalize_name
-from src.gadm.gadm import (
+from bionomia import normalize_name
+from gadm.gadm import (
     map_locations_to_gadm,
     serialize_locations,
 )
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request, execute_paginated_request
-from src.gbif.parser import parse
-from src.gbif.resolve_parameters import (
+from gbif.api import GbifApi
+from gbif.fetch import execute_request, execute_paginated_request
+from gbif.parser import parse
+from gbif.resolve_parameters import (
     resolve_names_to_taxonkeys,
     resolve_pending_search_parameters,
 )
-from src.grscicoll import normalize_institution
-from src.log import with_logging, logger
-from src.models.entrypoints import GBIFOccurrenceSearchParams
-from src.models.validators import OccurrenceSearchParamsValidator
-from src.utils import IdentifiedOrganism
-from src.utils import (
+from grscicoll import normalize_institution
+from log import with_logging, logger
+from models.entrypoints import GBIFOccurrenceSearchParams
+from models.validators import OccurrenceSearchParamsValidator
+from utils import IdentifiedOrganism
+from utils import (
     _generate_artifact_description,
     _generate_resolution_message,
     _preprocess_user_request,

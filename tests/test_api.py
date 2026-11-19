@@ -1,10 +1,10 @@
 import pytest
 from enums.species import TypeStatusEnum
 
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_sync_request
-from src.models.entrypoints import GBIFOccurrenceSearchParams, GBIFOccurrenceFacetsParams
-from src.models.occurrences import (
+from gbif.api import GbifApi
+from gbif.fetch import execute_sync_request
+from models.entrypoints import GBIFOccurrenceSearchParams, GBIFOccurrenceFacetsParams
+from models.occurrences import (
     BasisOfRecordEnum,
     ContinentEnum,
     OccurrenceStatusEnum,

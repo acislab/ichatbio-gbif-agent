@@ -3,16 +3,16 @@ from ichatbio.types import AgentEntrypoint
 from models.base import ProductionBaseModel
 from models.entrypoints import GBIFSpeciesTaxonomicParams
 from pydantic import BaseModel, Field
-from src.enums.species import (
+from enums.species import (
     TaxonomicStatusEnum,
     TaxonomicRankEnum,
     QueryFieldEnum,
 )
-from src.gbif.api import GbifApi
-from src.gbif.parser import parse
-from src.instructor_client import get_client
-from src.log import with_logging
-from src.models.entrypoints import GBIFSpeciesSearchParams
+from gbif.api import GbifApi
+from gbif.parser import parse
+from instructor_client import get_client
+from log import with_logging
+from models.entrypoints import GBIFSpeciesSearchParams
 
 description = f"""
 **Use Case:** Use this entrypoint to retrieve taxonomic information (like the full parent hierarchy, child taxa, or synonyms) that matches with a scientificName or taxonKey. It can also be used to find specific identifiers such as taxonKey, kingdomKey, etc in GBIF Backbone Taxonomy.

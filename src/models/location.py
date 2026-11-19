@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from src.enums.common import CountryEnum
+from enums.common import CountryEnum
 from util_types import ParameterEnum
 
 

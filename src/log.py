@@ -145,7 +145,7 @@ def log_exception(error: Exception, context: str = "") -> None:
     """
     try:
         # Import here to avoid circular imports
-        from src.exceptions import GBIFAgentError
+        from exceptions import GBIFAgentError
 
         if isinstance(error, GBIFAgentError):
             error_data = error.to_dict()

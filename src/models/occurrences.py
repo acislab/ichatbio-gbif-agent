@@ -3,10 +3,10 @@ from uuid import UUID
 
 from models.base import ProductionBaseModel
 from pydantic import Field, field_validator
-from src.enums.common import ContinentEnum, LicenseEnum, GbifRegionEnum, MediaObjectTypeEnum, CountryEnum
-from src.enums.occurrences import BasisOfRecordEnum, OccurrenceStatusEnum
-from src.enums.species import TaxonomicStatusEnum, TypeStatusEnum
-from src.log import logger
+from enums.common import ContinentEnum, LicenseEnum, GbifRegionEnum, MediaObjectTypeEnum, CountryEnum
+from enums.occurrences import BasisOfRecordEnum, OccurrenceStatusEnum
+from enums.species import TaxonomicStatusEnum, TypeStatusEnum
+from log import logger
 
 
 class TaxonomicFilters(ProductionBaseModel):

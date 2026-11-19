@@ -3,10 +3,10 @@ GrSciColl Institution Normalization - Simple single function
 """
 
 from ichatbio.agent_response import IChatBioAgentProcess
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request
-from src.models.grscicoll import GrSciCollInstitutionRecord
-from src.models.registry import GBIFGrSciCollInstitutionSearchParams
+from gbif.api import GbifApi
+from gbif.fetch import execute_request
+from models.grscicoll import GrSciCollInstitutionRecord
+from models.registry import GBIFGrSciCollInstitutionSearchParams
 
 
 async def normalize_institution(

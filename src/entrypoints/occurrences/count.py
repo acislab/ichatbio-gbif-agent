@@ -5,17 +5,17 @@ from typing import Iterable
 
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
-from src.bionomia import normalize_name
-from src.gadm.gadm import map_locations_to_gadm, serialize_locations
-from src.gbif.api import GbifApi
-from src.gbif.fetch import execute_request, execute_multiple_requests
-from src.gbif.parser import parse
-from src.gbif.resolve_parameters import resolve_names_to_taxonkeys, resolve_pending_search_parameters
-from src.grscicoll import normalize_institution
-from src.log import with_logging, logger
-from src.models.entrypoints import GBIFOccurrenceFacetsParams
-from src.models.validators import OccurrenceFacetsParamsValidator
-from src.utils import (
+from bionomia import normalize_name
+from gadm.gadm import map_locations_to_gadm, serialize_locations
+from gbif.api import GbifApi
+from gbif.fetch import execute_request, execute_multiple_requests
+from gbif.parser import parse
+from gbif.resolve_parameters import resolve_names_to_taxonkeys, resolve_pending_search_parameters
+from grscicoll import normalize_institution
+from log import with_logging, logger
+from models.entrypoints import GBIFOccurrenceFacetsParams
+from models.validators import OccurrenceFacetsParamsValidator
+from utils import (
     _preprocess_user_request,
     _generate_artifact_description,
     _generate_resolution_message,
@@ -24,7 +24,7 @@ from src.utils import (
     IdentifiedOrganism,
     NamedEntityType,
 )
-from src.utils import serialize_entities
+from utils import serialize_entities
 
 description = """
 **Occurrence-based counts and distincts (supports location/time/record filters).**

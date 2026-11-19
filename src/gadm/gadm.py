@@ -3,8 +3,8 @@ import os
 import sqlite3
 
 from ichatbio.agent_response import IChatBioAgentProcess
-from src.log import logger
-from src.models.location import (
+from log import logger
+from models.location import (
     Location,
     GADMHierarchy,
     GADMHierarchyLevel,
