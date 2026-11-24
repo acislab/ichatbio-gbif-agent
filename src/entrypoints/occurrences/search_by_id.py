@@ -1,11 +1,10 @@
-import urllib.parse
 import uuid
 
+from ichatbio.agent_response import ResponseContext
+from ichatbio.types import AgentEntrypoint
 from gbif.api import GbifApi
 from gbif.fetch import execute_request
 from gbif.parser import parse
-from ichatbio.agent_response import ResponseContext
-from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.validators import OccurrenceSearchByIdParamsValidator
 
@@ -99,7 +98,7 @@ async def run(context: ResponseContext, request: str):
             }
             await process.log("Record information - ", data=subset_response)
 
-            portal_url = urllib.parse.quote(f"{api.portal_url}/occurrence/{params.gbifId}")
+            portal_url = f"{api.portal_url}/occurrence/{params.gbifId}"
 
             await process.create_artifact(
                 mimetype="application/json",
