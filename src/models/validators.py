@@ -1,6 +1,5 @@
 from typing import ClassVar
 
-from pydantic import BaseModel, model_validator, ValidationInfo, field_validator
 from models.entrypoints import (
     GBIFOccurrenceSearchParams,
     GBIFOccurrenceByIdParams,
@@ -11,6 +10,7 @@ from models.entrypoints import (
     GBIFSpeciesFacetsParams,
 )
 from models.registry import GBIFGrSciCollInstitutionSearchParams
+from pydantic import BaseModel, model_validator, ValidationInfo, field_validator
 
 
 class RequestValidationMixin(BaseModel):
@@ -34,10 +34,7 @@ class RequestValidationMixin(BaseModel):
         valid_fields = set(type(self).model_fields.keys())
         for key in values.keys():
             if key not in valid_fields:
-                raise ValueError(
-                    f"Invalid parameter '{key}' provided. "
-                    f"Allowed parameters are: {sorted(valid_fields)}"
-                )
+                raise ValueError(f"Invalid parameter '{key}' provided. Allowed parameters are: {sorted(valid_fields)}")
 
         if not any(values.values()):
             raise ValueError("No values provided for any parameter")
@@ -53,7 +50,7 @@ class RequestValidationMixin(BaseModel):
                     context = self.VALIDATION_FIELDS[field]
                     raise ValueError(
                         f"The value '{v}' for field '{field}' ({context}) "
-                        f"was not found in the original request. "
+                        "was not found in the original request. "
                         "You must provide explicit values; they cannot be inferred or made up."
                     )
         return self

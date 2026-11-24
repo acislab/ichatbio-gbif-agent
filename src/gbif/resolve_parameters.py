@@ -1,6 +1,6 @@
 from instructor_client import get_client
 from models.entrypoints import GBIFSpeciesNameMatchParams
-from utils import IdentifiedOrganism
+from utils import IdentifiedOrganismName
 
 """
 Module for resolving taxonomic names to GBIF keys automatically.
@@ -196,7 +196,7 @@ async def resolve_pending_search_parameters(
 
 
 async def resolve_names_to_taxonkeys(
-        api: GbifApi, organisms: list[IdentifiedOrganism], process: IChatBioAgentProcess
+        api: GbifApi, organisms: list[IdentifiedOrganismName], process: IChatBioAgentProcess
 ) -> list:
     """
     Resolve scientific names to GBIF taxon keys using the species match API.

@@ -1,5 +1,4 @@
 import json
-import uuid
 from dataclasses import dataclass
 from typing import Iterable
 
@@ -12,7 +11,7 @@ from gbif.resolve_parameters import resolve_names_to_taxonkeys, resolve_pending_
 from grscicoll import normalize_institution
 from ichatbio.agent_response import ResponseContext, IChatBioAgentProcess
 from ichatbio.types import AgentEntrypoint
-from log import with_logging, logger
+from log import with_logging
 from models.entrypoints import GBIFOccurrenceFacetsParams
 from models.validators import OccurrenceFacetsParamsValidator
 from utils import (
@@ -21,7 +20,7 @@ from utils import (
     _generate_resolution_message,
     serialize_organisms,
     serialize_for_log,
-    IdentifiedOrganism,
+    IdentifiedOrganismName,
     NamedEntityType,
 )
 from utils import serialize_entities
@@ -72,8 +71,6 @@ async def run(context: ResponseContext, request: str):
     """
 
     async with context.begin_process("Requesting GBIF statistics") as process:
-        AGENT_LOG_ID = f"COUNT_OCCURRENCE_RECORDS_{str(uuid.uuid4())[:6]}"
-        logger.info(f"Agent log ID: {AGENT_LOG_ID}")
         await process.log(f"Request recieved: {request} \n\nParsing request...")
 
         expansion_response = await _preprocess_user_request(request)
@@ -141,39 +138,42 @@ async def run(context: ResponseContext, request: str):
             },
         )
 
-        response = await parse(
+        llm_generation = await parse(
             expandedRequest,
             entrypoint.id,
             OccurrenceFacetsParamsValidator,
             expansion_response,
         )
 
-        logger.info(f"Parameter parsing plan: {response}")
-        await process.log(f"Parameter parsing plan", data={"plan": response.plan})
+        await process.log(f"Parameter parsing plan", data={"plan": llm_generation.plan})
         api = GbifApi()
 
         param_result = await _get_parameters(
-            response,
+            llm_generation,
             request=expandedRequest,
-            organisms=expansion_response.organisms,
+            names=expansion_response.organisms,
             api=api,
             process=process,
         )
 
-        await process.log(
-            f"Search API parameters results -",
-            data=serialize_for_log(param_result),
-        )
+        await process.log(f"Search API parameter generation results:", data=serialize_for_log(param_result))
+
+        abort = False
+        if param_result.search_params is None:
+            await context.reply("Failed to generate search parameters")
+            abort = True
 
         if param_result.clarification_needed:
             await context.reply(param_result.clarification_message)
+            abort = True
+
+        if abort:
             return
 
-        search_params = param_result.search_params
-
-        api_url = api.build_occurrence_facets_url(search_params)
+        search_params: GBIFOccurrenceFacetsParams = param_result.search_params
 
         try:
+            api_url = api.build_occurrence_facets_url(search_params)
             await process.log(f"Sending data retrieval request to GBIF -", data={"url": api_url})
             raw_response = await execute_request(api_url)
             status_code = raw_response.get("status_code", 200)
@@ -188,29 +188,28 @@ async def run(context: ResponseContext, request: str):
                 return
             await process.log(f"Data retrieval successful, status code {status_code}")
 
-            await process.log("Resolving facet keys to scientific names if applicable")
-            facets = raw_response.get("facets", [])
-            enriched_facets = await _enrich_facets_with_names(api, process, facets)
-            raw_response["facets"] = enriched_facets
-
-            page_info = {
-                "count": raw_response.get("count"),
-                "facetLimit": search_params.facetLimit,
-                "facetOffset": search_params.facetOffset,
-            }
-            pagination_message = "API pagination information of the response"
-            if page_info.get("count") > (
-                    page_info.get("facetLimit") + page_info.get("facetOffset")
-            ):
-                pagination_message = "Warning: The response is truncated due to pagination and only contain subset of the data available on GBIF."
-            await process.log(pagination_message, data=page_info)
+            await process.log("Looking up scientific names for any received taxon keys")
+            await _enrich_facets_with_names(api, process, raw_response["facets"])
 
             portal_url = api.build_portal_url("occurrence/search", search_params)
+            matching_record_count = raw_response.get("count", 0)
+            await process.log(f"Facet counts were computed over {matching_record_count} matching occurrence records."
+                              f" these records can be viewed in the GBIF portal at {portal_url}")
 
-            artifact_description = await _generate_artifact_description(
-                f"User request: {request} Identified organisms in the request: {json.dumps(serialize_organisms(expansion_response.organisms))}, Search parameters: {json.dumps(serialize_for_log(search_params))}, URL: {api_url}",
-            )
-            content_bytes = json.dumps(raw_response, indent=2).encode("utf-8")
+            artifact_description = await _generate_artifact_description("\n\n".join([
+                f"User request: {request}",
+                f"Identified organisms in the request: {json.dumps(serialize_organisms(expansion_response.organisms))}",
+                f"API search parameters used: {json.dumps(serialize_for_log(search_params))}"
+            ]))
+
+            # TODO: process.log warning only if facet limit is reached for any facet
+            facet_offset = search_params.facetOffset or 0
+            facet_limit = search_params.facetLimit or 10  # TODO: no magic numbers
+            await process.log(f"Warning: only up to {facet_limit} counts are shown for each facet. If more counts are"
+                              f" needed and available, make another request with a higher \"facetLimit\" or request"
+                              f" the next page with facetOffset={facet_offset + facet_limit}")
+
+            content_bytes = json.dumps(raw_response).encode("utf-8")
             await process.create_artifact(
                 mimetype="application/json",
                 description=artifact_description,
@@ -221,47 +220,20 @@ async def run(context: ResponseContext, request: str):
                     "source": "GBIF",
                 },
             )
-
-            summary = _generate_response_summary(page_info, portal_url)
-
-            await context.reply(summary)
-
         except Exception as e:
-            await process.log(
-                "Error during API request",
-                data={
-                    "error": str(e),
-                    "agent_log_id": AGENT_LOG_ID,
-                    "api_url": api_url,
-                },
-            )
-            await context.reply(
-                f"I encountered an error while trying to count occurrences: {str(e)}",
-            )
-
-
-def _generate_response_summary(page_info: dict, portal_url: str) -> str:
-    if page_info.get("count") > 0:
-        summary = f"I have found {page_info.get('count')} occurrence records matching your criteria. "
-    else:
-        summary = "I have not found any occurrence records matching your criteria. "
-    summary += f"The results can also be viewed in the GBIF portal at {portal_url}."
-    return summary
+            # TODO: don't do this
+            await process.log("Error during API request", data={"error": str(e), "api_url": api_url})
+            await context.reply(f"I encountered an error while trying to count occurrences: {str(e)}")
+            raise
 
 
 async def _get_parameters(
         response: GBIFOccurrenceFacetsParams,
         request: str,
-        organisms: list[IdentifiedOrganism],
+        names: list[IdentifiedOrganismName],
         process: IChatBioAgentProcess = None,
         api: GbifApi = None,
 ) -> ParameterResolutionResult:
-    """
-    Executes the occurrence facets entrypoint. Counts occurrence records using the provided
-    parameters and creates an artifact with the faceted results.
-    """
-    resolved_fields = {}
-    unresolved_fields = []
     clarification_message = None
     clarification_needed = response.clarification_needed
 
@@ -298,8 +270,8 @@ async def _get_parameters(
     # Check if we need to resolve scientific names (before creating the final params)
     base_params = response.params.model_copy(update=params_updates)
     if getattr(base_params, "scientificName", None):
-        await process.log(f"Resolving {len(organisms)} organisms to taxon keys...")
-        taxon_keys = await resolve_names_to_taxonkeys(api, organisms, process)
+        await process.log(f"Resolving {len(names)} names to taxon keys...")
+        taxon_keys = await resolve_names_to_taxonkeys(api, names, process)
         if taxon_keys:
             params_updates.update(
                 {

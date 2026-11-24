@@ -20,7 +20,7 @@ from ichatbio.types import AgentEntrypoint
 from log import with_logging, logger
 from models.entrypoints import GBIFOccurrenceSearchParams
 from models.validators import OccurrenceSearchParamsValidator
-from utils import IdentifiedOrganism
+from utils import IdentifiedOrganismName
 from utils import (
     _generate_artifact_description,
     _generate_resolution_message,
@@ -273,7 +273,7 @@ class ParameterResolutionResult:
 
 async def _get_parameters(
         response: GBIFOccurrenceSearchParams,
-        organisms: list[IdentifiedOrganism] = None,
+        organisms: list[IdentifiedOrganismName] = None,
         api: GbifApi = None,
         process: IChatBioAgentProcess = None,
         request: str = None,

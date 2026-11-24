@@ -46,7 +46,7 @@ async def run(context: ResponseContext, request: str):
     Executes the taxon record counting entrypoint. Counts taxonomic name usage records using the provided
     parameters and creates an artifact with the faceted statistical results.
     """
-    async with context.begin_process("Requesting GBIF Species statistics") as process:
+    async with context.begin_process("Searching GBIF taxonomic records") as process:
         AGENT_LOG_ID = f"COUNT_SPECIES_RECORDS_{str(uuid.uuid4())[:6]}"
         await process.log(f"Request received: {request} \n\nParsing request...")
 

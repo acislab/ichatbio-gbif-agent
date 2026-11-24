@@ -8,7 +8,7 @@ from instructor_client import get_client
 from models.location import ResolvedLocation, GadmMatchType
 from pydantic import BaseModel, Field, create_model
 from tenacity import retry, stop_after_attempt, wait_exponential
-from utils import UserRequestExpansion, IdentifiedOrganism
+from utils import UserRequestExpansion, IdentifiedOrganismName
 
 CURRENT_DATE = datetime.datetime.now().strftime("%B %d, %Y")
 
@@ -93,7 +93,7 @@ def get_system_prompt(entrypoint_id: str):
 
 
 def format_organisms_parsing_response(
-        organisms: list[IdentifiedOrganism],
+        organisms: list[IdentifiedOrganismName],
 ):
     message = f"""
     ```json
@@ -149,27 +149,20 @@ async def parse(
         parameters_model: Type[T],
         preprocess_information: UserRequestExpansion | None = None,
 ) -> BaseModel:
-    messages = [
-        {
-            "role": "system",
-            "content": get_system_prompt(entrypoint_id),
-        }
-    ]
+    messages = [{"role": "system", "content": get_system_prompt(entrypoint_id)}]
     if preprocess_information:
         if preprocess_information.reasoning:
             messages.append(
                 {
                     "role": "assistant",
-                    "content": f"Preprocessed user request: Reasoning: {preprocess_information.reasoning}",
+                    "content": f"Preprocessed user request: Reasoning: {preprocess_information.reasoning}"
                 }
             )
         if preprocess_information.organisms:
             messages.append(
                 {
                     "role": "assistant",
-                    "content": format_organisms_parsing_response(
-                        preprocess_information.organisms
-                    ),
+                    "content": format_organisms_parsing_response(preprocess_information.organisms)
                 }
             )
         if preprocess_information.locations:

@@ -43,7 +43,7 @@ class NamedEntity(BaseModel):
         return self
 
 
-class IdentifiedOrganism(BaseModel):
+class IdentifiedOrganismName(BaseModel):
     term_found: str = Field(
         description="The exact organism term as found in the user request (e.g., 'birds', 'monkey', 'Cercopithecidae')"
     )
@@ -62,7 +62,7 @@ class UserRequestExpansion(BaseModel):
     reasoning: str = Field(
         description="Briefly describe: What organism terms found? What locations found? Any translations needed?"
     )
-    organisms: list[IdentifiedOrganism] = Field(
+    organisms: list[IdentifiedOrganismName] = Field(
         description="All organism terms found with their scientific names and taxonomic ranks",
         default_factory=list
     )
