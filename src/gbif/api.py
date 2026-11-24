@@ -2,6 +2,7 @@
 GBIF API URL Builder Module
 """
 import logging
+import urllib.parse
 from typing import Any
 from urllib.parse import urlencode
 from uuid import UUID
@@ -76,7 +77,9 @@ class GbifApi:
 
     def _make_api_url(self, endpoint: str, parameters: dict | None = None):
         query_string = "?" + urlencode(parameters or {}, doseq=True) if parameters else ""
-        return f"{self.base_url}{endpoint}{query_string}"
+        url = f"{self.base_url}{endpoint}{query_string}"
+        percent_encoded_url = urllib.parse.quote(url)
+        return percent_encoded_url
 
     def build_occurrence_search_url(self, params: GBIFOccurrenceSearchParams) -> str:
         api_params = self._convert_to_api_params(params, add_checklist="checklistKey")
@@ -152,9 +155,12 @@ class GbifApi:
                 for parameter, value in dict_params.items()
                 if value
             )
-            return f"{base_url}?{arguments}"
+            url = f"{base_url}?{arguments}"
+        else:
+            url = base_url
 
-        return base_url
+        percent_encoded_url = urllib.parse.quote(url)
+        return percent_encoded_url
 
 
 def _as_list(value):
