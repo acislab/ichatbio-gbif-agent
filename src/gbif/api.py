@@ -135,7 +135,7 @@ class GbifApi:
         dict_params = params.model_dump(exclude_none=True) if params is not None else {}
 
         # Remove facet-related and limit parameters
-        dict_params = {key: value for key, value in dict_params.items() if key not in {
+        portal_params = {key: value for key, value in dict_params.items() if key not in {
             "shuffle",
             "limit",
             "facet",
@@ -146,15 +146,11 @@ class GbifApi:
         }}
 
         # Construct portal URL
-        if dict_params:
-            arguments = "&".join(
-                "&".join((f"{parameter}={v}" for v in _as_list(value)))
-                for parameter, value in dict_params.items()
-                if value
-            )
-            return f"{base_url}?{arguments}"
+        if not portal_params:
+            return base_url
 
-        return base_url
+        arguments = urlencode(portal_params, doseq=True)
+        return f"{base_url}?{arguments}"
 
 
 def _as_list(value):

@@ -1,4 +1,5 @@
 import pytest
+from enums.common import CountryEnum
 from enums.species import TypeStatusEnum
 
 from gbif.api import GbifApi
@@ -81,7 +82,7 @@ class TestBuildPortalURLs:
     def test_occurrence_search(self, url_builder):
         params = GBIFOccurrenceSearchParams(scientificName=["Quercus robur"], limit=5, offset=10)
         portal_url = url_builder.build_portal_url("occurrence/search", params)
-        assert portal_url == "https://gbif.org/occurrence/search?offset=10&scientificName=Quercus robur"
+        assert portal_url == "https://gbif.org/occurrence/search?offset=10&scientificName=Quercus+robur"
 
     def test_remove_facet_parameters(self, url_builder):
         params = GBIFOccurrenceFacetsParams(country=["MN"], facet=["kingdom", "country"], facetMincount=5)
@@ -131,3 +132,9 @@ def test_complex_search_params(url_builder):
     assert api_params["license"] == ["CC0_1_0"]
     assert api_params["limit"] == 20
     assert api_params["offset"] == 40
+
+
+def test_portal_url(url_builder):
+    params = GBIFOccurrenceSearchParams(country=[CountryEnum.US, CountryEnum.CA], recordedBy=["Dr. Seuss"], limit=10)
+    portal_url = url_builder.build_portal_url("the/path", params)
+    assert portal_url == "https://gbif.org/the/path?recordedBy=Dr.+Seuss&country=US&country=CA"
